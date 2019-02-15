@@ -1,0 +1,206 @@
+body {
+    font-family: "Lato", sans-serif;
+  }
+
+  .navpush {
+      margin-left: 220px;
+  }
+  
+  .sidenav {
+    height: 100%;
+    width: 220px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 20px;
+  }
+  
+  .sidenav a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+  }
+  
+  .sidenav a:hover {
+    color: #f1f1f1;
+  }
+
+  .sidenav button {
+    background: transparent;
+    border-color: transparent;
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+  }
+
+  .sidenav button:hover{
+    color: #f1f1f1;
+  }
+
+
+  .drinkListContainer a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 12px;
+    color: #818181;
+    display: block;
+  }
+  
+  .main {
+    margin-left: 220px; /* Same as the width of the sidenav */
+    font-size: 28px; /* Increased text to enable scrolling */
+    padding: 0px 10px;
+  }
+
+  .text {
+      font-size: 18px;
+  }
+
+  .text-sm {
+      font-size: 12px;
+  }
+  
+  .prelude {
+      font-size: 16px;
+  }
+
+  .instructions {
+      font-size: 16px;
+  }
+
+  .drink_category_header{
+      color: white;
+      margin-left: 10px;
+  }
+
+  .liSelected {
+      background-color: aqua;
+  }
+
+  .ingredientDiv {
+      /* background:red; */
+  }
+  .ingredientLabel{
+      background: aqua;
+      min-height: 38px;
+  }
+  .ingredientLabel:hover{
+    background:rgb(0, 255, 149);
+}
+    .expanderbutton{
+        width: 50px;
+        height: 25px;
+        font-size: 12px;
+    }
+
+    .ingredientlayout {
+        margin: 0 10px;
+    }
+
+    .yourpantry{
+        /* display: flex; */
+        background: lightgray;
+        padding: 5px 0px;
+    }
+    .pantrybutton {
+
+    }
+    .pantrybutton:hover {
+        color:red;
+    }
+    .pantryspan{
+        border:1px;
+        border-color: black;
+        border-style: solid;
+        margin: 0 10px;
+        padding: 3px;
+    }
+    .pantrytext{
+
+    }
+    .pantryspan:hover > .pantrytext{
+        text-decoration: underline;
+    }
+
+    .tree_container{
+        margin-top: 15px;
+    }
+  
+
+    .drinkFound{
+        background: violet
+    }
+
+    .optionalIngredient {
+        /* background: green; */
+    }
+
+    .substitutionAvailable {
+        /* background: gray; */
+    }
+    .substitutionItem {
+        font-size: 20px;
+    }
+
+    .ingredientLink{
+
+    }
+    .treeMark{
+        /* background:#1B60FF; */
+        background: #FF7400;
+    }
+
+    .litext{
+        font-size: 12px;
+    }
+
+    .ingdisplay {
+        
+    }
+
+    .inghighlight {
+        color: darkcyan;
+        text-decoration: underline;
+    }
+
+    .ingdepress {
+        opacity: 0.3;
+    }
+
+    .svginghighlighter {
+
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .grid {
+        display: grid;
+        column-count: 2;
+    }
+
+    .drawing {
+        grid-column: 2;
+        width: 200px;
+    }
+
+    .editorGird {
+        display: grid;
+        column-count: 2;
+        width: 2px;
+        font-size: 12px
+    }
+
+  @media screen and (max-height: 450px) {
+    .sidenav {padding-top: 15px;}
+    .sidenav a {font-size: 18px;}
+  }
+
