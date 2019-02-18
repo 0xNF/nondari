@@ -77,11 +77,6 @@ async function pushIngredient(globalId: number, ingredient: IIngredient) {
     BuilderDraw();
 }
 
-function editIngredient(globalId: number) {
-    // wat do.
-    // don't push again, find the ingredient and change values
-}
-
 async function removeIngredient(gloabalId: number): Promise<void> {
     const remove = AddedIngredients.filter(x => x.id === gloabalId);
     remove.forEach(x => AddedIngredients.remove(x));
@@ -93,16 +88,6 @@ async function removeIngredient(gloabalId: number): Promise<void> {
 async function BuilderDraw(glass?: string, category?: string) {
 
     updateQRCodeAllotment('', '');
-    /* populate initial units */
-    if (units.any()) {
-        Globals.Drinks.map(x => x.Ingredients.map(y => y.Unit)).reduce((p, c) => {
-            // c is a list of units
-            c.forEach((z) => {
-                p.contains(z) ? null : p.push(z);
-            });
-            return p;
-        }, units);
-    }
 
     if (glass) {
         DrinkToDraw.Glass = glass;
@@ -165,30 +150,30 @@ function createIngredientPulldown(base: string, unitPulldown: JQuery<HTMLElement
     const label = $('<label>').attr('for', id).text('Ingredient');
     // create Ingredient Pulldown
     const sel: JQuery<HTMLElement> = $('<select>').attr('id', id);
-    // populate ingredient pulldown
-    for (const key in Globals.IngredientFlat) {
-        const ingredient = Globals.IngredientFlat[key];
-        const symbol = getIngredientNodeSVGStyle(ingredient, Globals.ingredients);
-        if (symbol) { /* only symbolized ingredients */
-            const ingId = ingredient.id;
-            const ingName = ingredient.name;
-            const opt = $('<option>').attr('id', `${base}_ingredient_select_option_${ingId}`);
-            opt.val(ingId);
-            opt.text(ingName);
-            sel.append(opt);
-        }
-    }
+    // // populate ingredient pulldown
+    // for (const key in Globals.IngredientFlat) {
+    //     const ingredient = Globals.IngredientFlat[key];
+    //     const symbol = getIngredientNodeSVGStyle(ingredient, Globals.ingredients);
+    //     if (symbol) { /* only symbolized ingredients */
+    //         const ingId = ingredient.id;
+    //         const ingName = ingredient.name;
+    //         const opt = $('<option>').attr('id', `${base}_ingredient_select_option_${ingId}`);
+    //         opt.val(ingId);
+    //         opt.text(ingName);
+    //         sel.append(opt);
+    //     }
+    // }
     // when option select changes, reset the unit pulldown
-    sel.on('change', () => {
-        const ingVal: number = parseInt(sel.val() as string);
-        ingredient.Unit = assignUnitPulldown(ingVal, unitPulldown).Name;
-        const node: IIngredientNode = IngredientVal2IngredientNode(ingVal);
-        if (!node) {
-            return; // ERROR
-        }
-        ingredient.IngredientName = node.name;
-        ingredient.IngredientId = node.id;
-    });
+    // sel.on('change', () => {
+    //     const ingVal: number = parseInt(sel.val() as string);
+    //     ingredient.Unit = assignUnitPulldown(ingVal, unitPulldown).Name;
+    //     const node: IIngredientNode = IngredientVal2IngredientNode(ingVal);
+    //     if (!node) {
+    //         return; // ERROR
+    //     }
+    //     ingredient.IngredientName = node.name;
+    //     ingredient.IngredientId = node.id;
+    // });
 
     label.append(sel);
     return label;
@@ -410,11 +395,51 @@ function DecodeDrink(urlstr: string): IDrink {
         Name: name,
         Ingredients: ingredients
     };
-
     return drink;
 }
 
+function InitBuilder() {
+    /* populate initial units */
+    const UnitSelect = $('#UnitList');
+    $('#UnitList').empty();
+    if (units.any()) {
+        Globals.Drinks.map(x => x.Ingredients.map(y => y.Unit)).reduce((p, c) => {
+            // c is a list of units
+            c.forEach((z) => {
+                p.contains(z) ? null : p.push(z);
+            });
+            return p;
+        }, units);
+    }
+
+    /* populate initial ingredients */
+    const IngredientSelect = $('#IngredientList');
+    IngredientSelect.empty();
+    for (const key in Globals.IngredientFlat) {
+        const ingredient = Globals.IngredientFlat[key];
+        const symbol = getIngredientNodeSVGStyle(ingredient, Globals.ingredients);
+        if (symbol) { /* only symbolized ingredients */
+            const ingId = ingredient.id;
+            const ingName = ingredient.name;
+            const opt = $('<option>').attr('id', `ingredient_select_option_${ingId}`);
+            opt.val(ingId);
+            opt.text(ingName);
+            IngredientSelect.append(opt);
+        }
+    }
+    IngredientSelect.on('change', () => {
+        const ingVal: number = parseInt(IngredientSelect.val() as string);
+        assignUnitPulldown(ingVal, UnitSelect).Name;
+        const node: IIngredientNode = IngredientVal2IngredientNode(ingVal);
+        if (!node) {
+            console.error(`Tried to change unit select to a unit that didn't have any available SVG symbols: ${ingVal}`);
+            return;
+        }
+    });
+}
+
 export {
+    InitBuilder,
     setDrinkName,
     setCategoryType,
     setGlassType,

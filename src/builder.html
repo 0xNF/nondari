@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -19,49 +20,48 @@
 </head>
 
 <body>
-
     <nav class="navpush navbar navbar-expand-lg navbar-dark bg-dark">
-            <a class="navbar-brand" href="/index.html">Nondari</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-    
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/index.html">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                            <a class="nav-link" href="#">Builder</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                            More
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="/drinks.html">Drink List</a>
-                            <a class="dropdown-item" href="/pantry.html">Pantry</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="/about.html">About</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                            Drinks
-                        </a>
-                        <div id="navdrinklist" class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        </div>
-                    </li>
-                </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form>
-            </div>
-        </nav>
+        <a class="navbar-brand" href="/index.html">Nondari</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/index.html">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Builder</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        More
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/drinks.html">Drink List</a>
+                        <a class="dropdown-item" href="/pantry.html">Pantry</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/about.html">About</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Drinks
+                    </a>
+                    <div id="navdrinklist" class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    </div>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
 
     <div class="sidenav sidenavpush">
         <button onclick="nondari.toggleDrinkList()">
@@ -90,29 +90,51 @@
                 There is too much data to represent in a QR Code. If you wish to have a QR Code created for your drink,
                 consider trimming your instructions or prelude.
             </div>
-            <button class='btn btn-xs btn-primary' onclick="nondari.CreateDrink()">Create Drink</button><br/>
+            <button class='btn btn-xs btn-primary' onclick="nondari.CreateDrink()">Create Drink</button><br />
 
             <div class="entry_grid text">
                 <label class="entry_grid_left" for="inputName">Name of Drink:</label>
                 <input class="entry_grid_right" id="inputName" type="text" onchange="nondari.setDrinkName(this.value)">
-                <br class="spanner"/>
+                <br class="spanner" />
                 <label class="entry_grid_left" for="selectCategory">Category:</label>
-                <select class="entry_grid_right" id="selectCategory" onchange="nondari.setCategoryType(this.value)"></select>
-                <br class="spanner"/>
+                <select class="entry_grid_right" id="selectCategory"
+                    onchange="nondari.setCategoryType(this.value)"></select>
+                <br class="spanner" />
                 <label class="entry_grid_left" for="selectGlass">Glass:</label>
                 <select class="entry_grid_right" id="selectGlass" onchange="nondari.setGlassType(this.value)"></select>
-                <br class="spanner"/>
+                <br class="spanner" />
                 <label class="entry_grid_left" for="area_prelude">Prelude:</label>
-                <textarea class="entry_grid_right entry_textarea" id="area_prelude" maxlength="500" onchange="nondari.setPrelude(this.value)"></textarea>
-                <br class="spanner"/>
+                <textarea class="entry_grid_right entry_textarea" id="area_prelude" maxlength="500"
+                    onchange="nondari.setPrelude(this.value)"></textarea>
+                <br class="spanner" />
                 <label class="entry_grid_left" for="area_instructions">Instructions:</label>
-                <textarea class="entry_grid_right entry_textarea" id="area_instructions" maxlength="500" onchange="nondari.setInstructions(this.value)"></textarea>
+                <textarea class="entry_grid_right entry_textarea" id="area_instructions" maxlength="500"
+                    onchange="nondari.setInstructions(this.value)"></textarea>
             </div>
 
 
-            <span style="display: flex;">
-                <button class="btn btn-xs btn-primary" style="margin-left: 10px;"
-                    onclick="nondari.addIngredient()">Add Ingredient</button>
+            <span>
+                <button class="btn btn-sm btn-primary" style="margin-left: 10px;"
+                    onclick="$('#IngredientEntry').removeClass('hidden').addClass('entry_grid')">+ Add Ingredient</button>
+                <div id="IngredientEntry" class="IngredientEntry text hidden">
+                    <label for="IngredientList">Ingredient</label>
+                    <select id="IngredientList"></select>
+
+                    <label for="UnitList">Unit</label>
+                    <select id="UnitList"></select>
+
+                    <label for="QuantitySelect">Quantity</label>
+                    <input id="QuantitySelect" type="text">
+
+                    <label for="DisplayTextInput">Display Text</label>
+                    <input id="DisplayTextInput" type="text">
+
+                    <span>
+                        <button class="btn btn-success btn-sm" onclick="$('#IngredientEntry').removeClass('entry_grid').addClass('hidden');nondari.addIngredient2()">Add</button>
+                        <button class="btn btn-danger btn-sm" onclick="$('#IngredientEntry').removeClass('entry_grid').addClass('hidden')">Cancel</button>
+                    </span>
+                </div>
+
             </span>
 
 
@@ -121,10 +143,8 @@
                     <ul id="drinkIngredientsEdit"></ul>
                     <ul id="drinkIngredients"></ul>
                 </span>
-
                 <div id="svg_placement" class="drawing">
-                    <div id="svg">
-                    </div>
+                    <div id="svg"></div>
                 </div>
                 <div id="svgtmp" class="hidden"></div>
             </div>
@@ -133,15 +153,13 @@
     </div>
 
     <footer class="footer">
-            &copy;2019 Nondari
-            <span style='float: right'>
-                <a href='/about.html'>About</a>
-                <a href="https://www.github.com/0xnf/nondari">GitHub</a>
-            </span>
-        </footer>
+        &copy;2019 Nondari
+        <span style='float: right'>
+            <a href='/about.html'>About</a>
+            <a href="https://www.github.com/0xnf/nondari">GitHub</a>
+        </span>
+    </footer>
 
+    <script src="/main.bundle.js"></script>
 </body>
-
-<script src="/main.bundle.js"></script>
-
 </html>
