@@ -1,8 +1,7 @@
-import { Globals } from '../services/Globals';
-
 interface IUnit {
     Id: number;
     Name: string;
+    Plural: string;
 }
 
 interface IDisplayUnit {

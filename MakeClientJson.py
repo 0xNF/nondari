@@ -59,7 +59,7 @@ def GetUnits():
     conn = sqlite3.connect(db)
     c = conn.cursor()
 
-    q = "SELECT um.UnitType AS UnitTypeId, ut.TypeName AS UnitTypeName, um.Unit AS UnitId, u.Name AS UnitName, um.OrderPreference AS OrderPref FROM UnitMap AS um JOIN UnitTypes AS ut ON ut.Id=um.UnitType JOIN Units AS u ON u.Id=um.Unit;"
+    q = "SELECT um.UnitType AS UnitTypeId, ut.TypeName AS UnitTypeName, um.Unit AS UnitId, u.Name AS UnitName, u.Plural as Plural, um.OrderPreference AS OrderPref FROM UnitMap AS um JOIN UnitTypes AS ut ON ut.Id=um.UnitType JOIN Units AS u ON u.Id=um.Unit;"
     Units = {}
     UnitTypes = {}
 
@@ -76,15 +76,16 @@ def GetUnits():
         # unit
         unitId = u[2]
         unitName = u[3]
+        unitPlural = u[4]
 
         if unitId in Units:
             unit = Units[unitId]
         else:
-            unit = {'Id': unitId, 'Name': unitName}
+            unit = {'Id': unitId, 'Name': unitName, 'Plural': unitPlural}
             Units[unitId] = unit
 
         # order pref
-        pref = u[4]
+        pref = u[5]
 
         UnitWrapper = {'Id': unitId, 'Unit': unit, 'OrderPerference': pref}
         unitType['Units'].append(UnitWrapper)
