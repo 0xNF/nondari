@@ -90,55 +90,34 @@
                 There is too much data to represent in a QR Code. If you wish to have a QR Code created for your drink,
                 consider trimming your instructions or prelude.
             </div>
-            <button class='btn btn-xs btn-primary' onclick="nondari.CreateDrink()">Create Drink</button><br />
+            <button class='btn btn-xs btn-primary' onclick="nondari.CreateDrink()">Create Drink</button><br/>
 
-            <div class='text'> <label class="text">
-                    Name of drink:
-                    <input type="text" onchange="nondari.setDrinkName(this.value)">
-                </label>
-            </div>
-
-            <div class='text'>
-                <label>
-                    Prelude:
-                    <textarea id="area_prelud" maxlength="500" style='height: 50px'
-                        onchange="nondari.setPrelude(this.value)"></textarea>
-                </label>
-            </div>
-
-            <div class='text'>
-                <label>
-                    Instructions:
-                    <textarea id="area_prelud" maxlength="500" style='height: 50px'
-                        onchange="nondari.setInstructions(this.value)"></textarea>
-                </label>
+            <div class="entry_grid text">
+                <label class="entry_grid_left" for="inputName">Name of Drink:</label>
+                <input class="entry_grid_right" id="inputName" type="text" onchange="nondari.setDrinkName(this.value)">
+                <br class="spanner"/>
+                <label class="entry_grid_left" for="selectCategory">Category:</label>
+                <select class="entry_grid_right" id="selectCategory" onchange="nondari.setCategoryType(this.value)"></select>
+                <br class="spanner"/>
+                <label class="entry_grid_left" for="selectGlass">Glass:</label>
+                <select class="entry_grid_right" id="selectGlass" onchange="nondari.setGlassType(this.value)"></select>
+                <br class="spanner"/>
+                <label class="entry_grid_left" for="area_prelude">Prelude:</label>
+                <textarea class="entry_grid_right entry_textarea" id="area_prelude" maxlength="500" onchange="nondari.setPrelude(this.value)"></textarea>
+                <br class="spanner"/>
+                <label class="entry_grid_left" for="area_instructions">Instructions:</label>
+                <textarea class="entry_grid_right entry_textarea" id="area_instructions" maxlength="500" onchange="nondari.setInstructions(this.value)"></textarea>
             </div>
 
 
-            <div class='text'>
-                <label class="text">
-                    Category:
-                    <select id="selectCategory" onchange="nondari.setCategoryType(this.value)"></select>
-                    </select>
-                </label>
-            </div>
-
-            <div>
-                <label class="text">
-                    Glass type:
-                    <select id="selectGlass" onchange="nondari.setGlassType(this.value)"></select>
-                    </select>
-                </label>
-            </div>
+            <span style="display: flex;">
+                <button class="btn btn-xs btn-primary" style="margin-left: 10px;"
+                    onclick="nondari.addIngredient()">Add Ingredient</button>
+            </span>
 
 
             <div class="grid" style="margin-right: 25%">
                 <span>
-                    <span style="display: flex;">
-                        <h3 style="margin-top: 5px">Ingredients</h3>
-                        <button class="btn btn-xs btn-primary" style="margin-left: 10px;"
-                            onclick="nondari.addIngredient()"> +</button>
-                    </span>
                     <ul id="drinkIngredientsEdit"></ul>
                     <ul id="drinkIngredients"></ul>
                 </span>
@@ -148,7 +127,6 @@
                     </div>
                 </div>
                 <div id="svgtmp" class="hidden"></div>
-
             </div>
 
         </div>

@@ -217,6 +217,25 @@ body {
         background-color: #252526;
     }
 
+    .entry_grid {
+        display: grid;
+        column-count: 2;
+        max-width: 400px;
+    }
+    .entry_grid_left {
+        grid-column: 1;
+    }
+    .entry_grid_right {
+        grid-column: 2;
+    }
+    .spanner {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+    .entry_textarea {
+        height: 50px;
+    }
+
 @media only screen and (min-width: 768px) {
 
 
