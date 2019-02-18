@@ -1,7 +1,7 @@
 <html lang="en">
 
 <head>
-    <title>Nondari</title>
+    <title>Pantry - Nondari</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -12,7 +12,8 @@
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
         crossorigin="anonymous">
-    <link rel="stylesheet" href="/css/site.css">
+    <script src="js/qrcode.min.js"></script>
+    <link rel="stylesheet" href="css/site.css">
 </head>
 
 <body>
@@ -41,7 +42,7 @@
                             <a class="dropdown-item" href="/drinks.html">Drink List</a>
                             <a class="dropdown-item" href="/pantry.html">Pantry</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">About</a>
+                            <a class="dropdown-item" href="/about.html">About</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
@@ -60,7 +61,6 @@
             </div>
         </nav>
 
-
     <div class="sidenav sidenavpush">
         <button onclick="nondari.toggleDrinkList()">
             <span id="drinklistarrow"></span>Drink List
@@ -68,88 +68,47 @@
         <div id="drinkslistcontainer" class="drinkListContainer">
         </div>
         <a href="#services">Search</a>
-        <a href="/pantry.html">Pantry</a>
+        <a href="/pantry.html" >Pantry</a>
+        <a href="/builder.html">Drink Builder</a>
     </div>
 
     <div class="main mainpush">
-            <span style="font-size: 8px">version: 0.1.0</span>
-        <h1>About</h1>
-        <p class="text">
-            Nondari was inspired by reading the excellent <a href="https://www.phaidon.com/store/food-cook/regarding-cocktails-9780714872810/"
-                target="_blank">Regarding Cocktails</a> by Sasha Petraske and his wife, Georgette Moger-Petraske. The
-            book serves as an introduction to cocktails, and teaches a wide array of drink types while adhering to a simple elegance in each recipe.
-        </p>
-        <p class="text">
-            Each drink in the book also comes with its own hand-crafted graphic representing the drink in a
-            beautifully minimalistic style.
-        </p>
-        <p class="text">
-            This site aims to recreate the elegance of each drink, while also fixing some minor editing errors from the
-            book.
-        </p>
-
-        <p class="text">
-            This site's name, "nondari", is derived from the Japanese term "飲んだり" (nondari), which roughly translated to
-            "while drinking". We hope you use this site while drinking a cocktail, or while thinking about them.
-        </p>
-
-        <h2>Features</h2>
-        <p class="text">
-            Like the book, each drink has its own unique drawing which can be interacted with to highlight each
-            individual ingredient.
-        </p>
-        <p class="text">
-            Additionally, we have added a few features to the experience that are only possible on a computer: You can
-            search for all drinks that use a specific ingredient, as well as <a href="/pantry.html">assemble a personal
-                inventory</a> of your own liquors, juices and other ingredients, which can be used to show you what
-            drinks you're capable of making.
-        </p>
-
-        <h2>Coming Soon</h2>
-        <ul class="text">
-            <li>Mobile format</li>
-            <li>Custom drink builder</li>
-            <li>More ingredients</li>
-        </ul>
-        <h2>Acknowledgements</h2>
-        <p class="text">
-            This site, like most sites, is built using other people's software. We'd like to thank those pieces of
-            software for making this possible:
-        </p>
-        <ul class="text">
-            <li>
-                <a href="https://www.typescriptlang.org/" target="_blank">TypeScript</a>
-            </li>
-            <li>
-                <a href="https://svgjs.com/" target="_blank">svg.js</a>
-            </li>
-            <li>
-                <a href="http://mathjs.org/" target="_blank">mathjs</a>
-            </li>
-        </ul>
-
-        <h2>Contact</h2>
-        <p class="text">
-            Nondari is an open source project available at <a href="https://github.com/0xnf/nondari">https://github.com/0xnf/nondari</a>
-        </p>
-        <h5>Bugs</h5>
-        <p class="text">
-            If you encounter any bugs, please open an issue on the <a href="https://github.com/0xnf/nondari/issues">GitHub tracker</a>. That being said, we understand that not everyone has a GitHub account. In that case, please reach out at <a href="mailto:bugs.nondari@winetech.com">bugs.nondari@winetech.com</a>.
-        </p>
-        <h5>Feedback</h5>
-        <p class="text">
-            We'd love to hear from you. Please reach out at <a href="mailto:feedback.nondari@winetech.com">feedback.nondari@winetech.com</a> with anything you have on your mind.
-        </p>
+        <h2 id="drinkHeader"></h2>
+        <span style="font-size: 14px; display: flex;">
+            Category:
+            <div id="drinkCategory" ></div>
+        </span>
+        <span style="font-size: 14px; display: flex;">
+            Glass:
+            <div id="drinkGlass"></div>
+        </span>
+        <h3>Prelude</h3>
+        <p id="drinkDescription" class="prelude"></p>
+        <div class="grid text" style="margin-right: 25%">
+            <span>
+                <h3>Ingredients</h3>
+                <ul id="drinkIngredients"></ul>
+            </span>
+            <div id="svg_placement" class="drawing">
+                <div id="svg">
+                </div>
+            </div>
+            <div id="svgtmp" class="hidden"></div>
+        </div>
+        <h3>Instructions</h3>
+        <p id="drinkInstructions" class="instructions"></p>
+        <div id="qrcode"></div>
     </div>
+
 
     <footer class="footer">
             &copy;2019 Nondari
             <span style='float: right'>
-                <a href='#'>About</a>
+                <a href='/about.html'>About</a>
                 <a href="https://www.github.com/0xnf/nondari">GitHub</a>
             </span>
         </footer>
-
+        
 </body>
 
 <script src="/main.bundle.js"></script>

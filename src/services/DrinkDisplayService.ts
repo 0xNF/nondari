@@ -1,9 +1,9 @@
+import { math } from './MathService';
 import { IDrink } from '../models/IDrink';
 import { Globals } from './Globals';
 import { SelectedDrinkObject, ISelectedDrink, } from '../models/SelectedDrinkObject';
 import { IIngredient } from '../models/IIngredient';
 import { makeIngredientIdForHTML, UnitAndPlurals } from './IngredientService';
-import math = require('mathjs');
 import { highlightGroupGenerator, DrawDrinkSVG, restoreGroups } from './SVGService';
 import { WeirdnessLevelMap } from '../models/WLM';
 
@@ -20,7 +20,7 @@ function DrawDrink(): void {
 
     if (SelectedDrinkObject.Drink) {
         $('#li_drink_' + SelectedDrinkObject.Drink.DrinkId).addClass('liSelected');
-        displayDrink(SelectedDrinkObject);
+        DisplayDrink(SelectedDrinkObject);
         window.document.title = SelectedDrinkObject.Drink.Name + ' - Nondari';
     }
 }
@@ -131,11 +131,77 @@ function ingredientText(ingredient: IIngredient, additionalText: string, sdo?: I
     return sp;
 }
 
-function decorateText(t: string): string {
-    const str = t.replace(/\n/g, '<br />');
-    return str;
+/* eliminate all html */
+function strip(html: string): string {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || '';
 }
-function displayDrink(SDO: ISelectedDrink): void {
+
+
+/**
+ * A small DSL parser to keep our user-submitted preludes and instructions XSS safe.
+ *
+* the DSL for prelude and intructions is as follows:
+*
+* {dNUM_text}, i.e., {d17_Bee's Knees} == <a href='drinks.html#17>Bee's Knees</a>
+*
+* {i_text}, i.e., {i_guey} == <i>guey</i>
+*/
+function replaceDSL(t: string): string {
+
+    const open = '{';
+    const close = '}';
+    const italicToken = 'i';
+    const drinkToken = 'd';
+
+    let ret = t; /* string we will be operating on for replacements */
+
+    let openB = 0; /* initialized to something above -1 */
+    while (openB > -1) {
+        openB = ret.indexOf(`${open}d`);
+
+        /* changing links */
+        if (openB > -1) {
+            const closeB = ret.indexOf(close, openB);
+            const sub = ret.substr(openB, closeB - openB + 1);
+            const replacer = sub.replace(open, '').replace(close, '').replace(drinkToken, '');
+            const splits = replacer.split('_');
+            const drinkNum = parseInt(splits[0]);
+            const drinkName = splits[1];
+            const drink = Globals.Drinks.find(x => x.DrinkId === drinkNum);
+            if (!drink) {
+                console.error('tried to find drinkid ' + drinkNum + ' but none was found.');
+                // replace with drink name It doesn't matter.
+                ret = ret.replace(sub, drinkName);
+            } else {
+                ret = ret.replace(sub, `<a href="/drinks.html#${drinkNum}">${drinkName}</a>`);
+            }
+        }
+
+        /* changing italics */
+        openB = ret.indexOf(`${open}i`);
+        if (openB > -1) {
+            const closeB = ret.indexOf(close, openB);
+            const sub = ret.substr(openB, closeB - openB + 1);
+            const replacer = sub.replace(open, '').replace(close, '').replace(italicToken, '');
+            const splits = replacer.split('_');
+            const fancy = splits[1];
+            ret = ret.replace(sub, `<i>${fancy}</i>`);
+        }
+    }
+
+    return ret;
+}
+
+function decorateText(t: string): string {
+
+    let s = strip(t);
+    s = replaceDSL(s);
+    s = s.replace(/\n/g, '<br />');
+
+    return s;
+}
+function DisplayDrink(SDO: ISelectedDrink): void {
 
     $('#drinkHeader').text(SDO.Drink.Name);
     $('#drinkDescription').html(decorateText(SDO.Drink.Prelude));
@@ -147,7 +213,7 @@ function displayDrink(SDO: ISelectedDrink): void {
 
     SDO.Drink.Ingredients.forEach((x: IIngredient) => {
         const sp: JQuery<HTMLElement> = $('<span>');
-        const li: JQuery<HTMLElement> = $('<li>');
+        const li: JQuery<HTMLElement> = $('<li>').addClass('text');
         const ul: JQuery<HTMLElement> = li.append(sp);
         let additionalText: string = '';
         if (SDO.Optionals.contains(x.IngredientId)) {
@@ -156,11 +222,11 @@ function displayDrink(SDO: ISelectedDrink): void {
         } else if (x.IngredientId in SDO.Substitutions) {
             sp.addClass('substitutionAvailable');
             additionalText = '(substitutions available)';
-            const ul2: JQuery<HTMLElement> = $('<ul>');
+            const ul2: JQuery<HTMLElement> = $('<ul>').addClass('text');
             const isubs = SDO.Substitutions[x.IngredientId];
             for (const distance in isubs) {
-                const dist: JQuery<HTMLElement> = $('<li>').addClass('substitutionItem');
-                const sp2: JQuery<HTMLElement> = $('<span>');
+                const dist: JQuery<HTMLElement> = $('<li>').addClass('substitutionItem').addClass('text');
+                const sp2: JQuery<HTMLElement> = $('<span>').addClass('text');
                 const iter = isubs[distance];
                 sp2.text(`${WeirdnessLevelMap[Number(distance)]}: `);
                 for (let i = 0; i < iter.length; i++) {
@@ -183,5 +249,5 @@ function displayDrink(SDO: ISelectedDrink): void {
 
 export {
     DrawDrink,
-    displayDrink,
+    DisplayDrink,
 };

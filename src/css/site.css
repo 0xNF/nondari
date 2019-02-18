@@ -3,12 +3,20 @@ body {
   }
 
   .navpush {
-      margin-left: 220px;
+      margin-left: 0;
+  }
+  
+
+  .sidenavpush {
+      width: 0;
+  }
+
+  .mainpush {
+      margin-left: 0;
   }
   
   .sidenav {
     height: 100%;
-    width: 220px;
     position: fixed;
     z-index: 1;
     top: 0;
@@ -52,15 +60,19 @@ body {
     color: #818181;
     display: block;
   }
+
+  .drinkListContainer a .mainlink {
+      color: black;
+  }
   
   .main {
-    margin-left: 220px; /* Same as the width of the sidenav */
     font-size: 28px; /* Increased text to enable scrolling */
     padding: 0px 10px;
+    margin-top: 10px;
   }
 
   .text {
-      font-size: 18px;
+      font-size: 12px;
   }
 
   .text-sm {
@@ -75,10 +87,15 @@ body {
       font-size: 16px;
   }
 
-  .drink_category_header{
+  .drink_category_header_side{
       color: white;
       margin-left: 10px;
   }
+
+  .drink_category_heade_main{
+    color: black;
+    margin-left: 10px;
+}
 
   .liSelected {
       background-color: aqua;
@@ -182,6 +199,43 @@ body {
         display: none;
     }
 
+
+    .footer {
+        background-color:#343A40;
+        color: white;
+        bottom: 0;
+        width: 100%;
+        position: relative;
+        display: none;
+    }
+    .footer a {
+        color: white;
+        margin-right: 5px;
+    }
+
+    .topnav {
+        background-color: #252526;
+    }
+
+@media only screen and (min-width: 768px) {
+
+
+    .navpush {
+        margin-left: 220px;
+    }
+    
+    .sidenavpush {
+        width: 220px;
+    }
+  
+    .mainpush {
+        margin-left: 220px;
+    }
+
+    .text {
+        font-size: 18px;
+    }
+
     .grid {
         display: grid;
         column-count: 2;
@@ -198,6 +252,7 @@ body {
         width: 2px;
         font-size: 12px
     }
+}
 
   @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}

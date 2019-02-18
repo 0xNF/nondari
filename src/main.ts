@@ -1,9 +1,8 @@
 import './extensions/array.extensions';
 import './extensions/object.extensions';
 import './extensions/string.extensions';
-import 'svg.js';
 import { constructCategories } from './services/CategoryService';
-import { DrawSidebar, populateIngredientTree, showYourDrinks, toggleDrinkList, EliminatePantry } from './services/DisplayService';
+import { DrawSidebar, populateIngredientTree, showYourDrinks, toggleDrinkList, EliminatePantry, DrawCustom, DrawMainList } from './services/DisplayService';
 import { calculateDrinks as cd, constructDrinks } from './services/DrinkService';
 import { constructGlasses } from './services/GlassService';
 import { Globals } from './services/Globals';
@@ -16,7 +15,7 @@ import { SearchObject } from './models/SearchObject';
 import { SelectedDrinkObject } from './models/SelectedDrinkObject';
 import { DownloadMainJson } from './services/DownloadService';
 import { StorageGetPantryItems } from './services/StorageService';
-import { setCategoryType, setDrinkName, setGlassType, BuilderDraw, addIngredient } from './services/BuilderService';
+import { setCategoryType, setDrinkName, setGlassType, BuilderDraw, addIngredient, CreateDrink, DecodeDrink, setInstructions, setPrelude } from './services/BuilderService';
 import { IData } from './models/Data';
 
 // -- Global Variables --\\
@@ -115,6 +114,13 @@ async function main(json: IData) {
 
     const thispage: string = findPage().toLocaleLowerCase();
     if (thispage === 'drinks') {
+        if (window.location.hash.any() || window.location.search.any()) {
+            $('#drinkNoDrink').addClass('hidden');
+            $('#drinkBase').removeClass('hidden');
+        } else {
+            DrawMainList(Globals.Categories, Globals.Drinks);
+
+        }
         if (window.location.search.any()) {
             decodeDrinkNav(window.location.search, Globals.Drinks, Globals.IngredientFlat, NavObj, SelectedDrinkObject); // TEST
         }
@@ -122,6 +128,8 @@ async function main(json: IData) {
         populateIngredientTree(Globals.ingredients, SearchObject);
     } else if (thispage === 'builder') {
         await BuilderDraw(Globals.Glasses[0], Globals.Categories[0].name);
+    } else if (thispage === 'custom') {
+        await DrawCustom();
     }
     window.onhashchange = locationHashChanged;
     locationHashChanged();
@@ -151,5 +159,9 @@ export {
     setCategoryType,
     setGlassType,
     setDrinkName,
+    setPrelude,
+    setInstructions,
     addIngredient,
+    CreateDrink,
+
 };

@@ -124,6 +124,25 @@ const Highball: IGlass = {
     Width: 169
 };
 
+const WineGlass: IGlass = {
+    Name: 'wine glass',
+    MaskURL: '/img/glasses/redwineglass_mask.svg',
+    SVGURL: '/img/glasses/redwineglass.svg',
+    AvailableRows: 21,
+    Height: 416,
+    Width: 196
+};
+
+const OldFashionedWineGlass: IGlass = {
+    Name: 'old fashioned wine glass',
+    MaskURL: '/img/glasses/oldfashionedwineglass_mask.svg',
+    SVGURL: '/img/glasses/oldfashionedwineglass.svg',
+    AvailableRows: 23,
+    Height: 416,
+    Width: 196
+};
+
+
 
 const Glasses: ReadonlyArray<IGlass> = [
     CoupeGlass,
@@ -139,6 +158,8 @@ const Glasses: ReadonlyArray<IGlass> = [
     ImperialPint,
     Highball,
     MartiniGlass,
+    WineGlass,
+    OldFashionedWineGlass,
 ];
 
 

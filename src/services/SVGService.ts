@@ -5,6 +5,9 @@ import { NoSiblings, ITree, DFS } from '../models/ITree';
 import { Ingredient2IngredientNode, makeIngredientIdForHTML } from './IngredientService';
 import { GlassString2Glass } from './GlassService';
 import { IGlass } from '../models/IGlass';
+import { UnitString2Unit, Unit2OunceConverter } from './UnitService';
+import { IUnit } from '../models/IUnit';
+import { useThisNumber } from './Utils';
 
 interface IElementMeta {
     Height: number;
@@ -183,32 +186,7 @@ const smap: {[key: string]: string} = {
 };
 
 
-/**
- * Ingredient quantites are always strings and sometimes contain ranges in the form of `"a-b"`
- * This method takes any quantity and returns the numerical version of that numer-string.
- *
- *
- * In the event of ranges, selects the highest range.
- * @param quantity Ingredient quantity to parse
- */
-function useThisNumber(quantity: string): number {
-    if (quantity.contains('-')) {
-        const splits: Array<string> = quantity.split('-');
-        const numarr: Array<number>  = splits.map((x) => {
-            const num = parseFloat(x);
-            if (isNaN(num)) {
-                console.error(`Error parsing a number from drink quantity value. Received ${x}`);
-                return 0;
-            }
-            return num;
-        });
-        const toUse: number = numarr.reduce((p, c) => {
-            return c > p ? c : p;
-        }, 0);
-        return toUse;
-    }
-    return +quantity;
-}
+
 
 /**
  * Returns the number of rows each ingredient should take up given the drink's glass.
@@ -218,9 +196,13 @@ function calculateLiquidRatios(drink: IDrink): Array<IIngredientRatio> {
     const ounces: Array<IIngredient> = drink.Ingredients.filter(x => x.Unit === 'oz' || x.Unit === 'shot');
     const total: number = ounces.reduce((p, c) => {
         let num = useThisNumber(c.Quantity);
-        if (c.Unit === 'shot') {
-            num *= 1.5;
+        // get unit
+        const unit: IUnit = UnitString2Unit(c.Unit);
+        const inOunces = Unit2OunceConverter(unit);
+        if (inOunces === -1) {
+            return p; // skip invalids
         }
+        num *= inOunces;
         return p + num;
     }, 0);
 
@@ -276,7 +258,6 @@ async function GetSVG(url: string): Promise<string> {
     if (url in smap) {
         return smap[url];
     } else {
-        console.log('Cache miss! Downloading ' + url);
         const r = await fetch(url);
         const t = await r.text();
         smap[url] = t;
@@ -363,7 +344,6 @@ function makeIngredientGroup(ingredient: IIngredient): SVG.G {
     const svgg = temp.group();
     svgg.attr('id', gid).addClass('svginghighlighter');
     svgg.remove();
-    console.log(svgg);
 
     GroupRegister.push(svgg);
     svgg.on('mouseover', highlightGroupGenerator(ingredient));
@@ -450,7 +430,7 @@ async function DrawDrinkSVG(drink: IDrink, universe: Array<IIngredientNode>) {
 
     /**
      * Draw top items
-     * we collect all height informatino up front so we can draw properly
+     * we collect all height information up front so we can draw properly
      */
 
     const additionalHeights: Array<number> = [0];
@@ -498,7 +478,6 @@ async function DrawDrinkSVG(drink: IDrink, universe: Array<IIngredientNode>) {
         const off_y: number  = elem_height; /* will move down by some amount for each same-ingredient */
         const start_y: number = additionalHeightNeeded; /* starts drawing bottom up */
         const svgg: SVG.G = await drawTop(dash, start_x, off_x, start_y, off_y, elem_height, universe);
-        console.log(mask);
         topG.add(svgg);
     }
 
@@ -571,7 +550,6 @@ async function DrawDrinkSVG(drink: IDrink, universe: Array<IIngredientNode>) {
     }
 
     /* draw garnishes, if any */
-    // todo fix cucumbers in db, which aren't reflected as garnishes in their instructions
     // todo fix side push collisions with bitters and pinches
     if (garnishes.length > 0) {
         for (let i = 0; i < garnishes.length; i++) {
@@ -593,10 +571,13 @@ async function DrawDrinkSVG(drink: IDrink, universe: Array<IIngredientNode>) {
 
     const currentVbHeight = canv.viewbox().height;
     canv.viewbox(0, 0, SVGOptions.WidthCanvas + additionalSidePushNeeded, currentVbHeight + additionalHeightNeeded);
+
+    /* shift everything over by the needed amounts */
+    /* y */
     mainG.dy(additionalHeightNeeded);
     glassG.dy(additionalHeightNeeded);
     iceG.dy(additionalHeightNeeded);
-
+    /* x */
     mainG.dx(additionalSidePushNeeded);
     glassG.dx(additionalSidePushNeeded);
     iceG.dx(additionalSidePushNeeded);

@@ -4,22 +4,24 @@
     <title>Drink Builder - Nondari</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
         crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
         crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.4.1/math.min.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
-        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel="stylesheet" href="css/site.css">
 </head>
 
 <body>
 
-    <nav class="navpush navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="/nondari.html">Nondari</a>
+    <nav class="navpush navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="/index.html">Nondari</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -28,10 +30,10 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" href="/nondari.html">Home <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="/index.html">Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
+                            <a class="nav-link" href="#">Builder</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
@@ -39,10 +41,18 @@
                             More
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="/nondari.html">Drink List</a>
+                            <a class="dropdown-item" href="/drinks.html">Drink List</a>
                             <a class="dropdown-item" href="/pantry.html">Pantry</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="/about.html">About</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            Drinks
+                        </a>
+                        <div id="navdrinklist" class="dropdown-menu" aria-labelledby="navbarDropdown">
                         </div>
                     </li>
                 </ul>
@@ -53,7 +63,7 @@
             </div>
         </nav>
 
-    <div class="sidenav">
+    <div class="sidenav sidenavpush">
         <button onclick="nondari.toggleDrinkList()">
             <span id="drinklistarrow"></span>Drink List
         </button>
@@ -64,52 +74,93 @@
         <a href="#" class="liSelected">Drink Builder</a>
     </div>
 
-    <div class="main">
+    <div class="main mainpush">
         <div class="main_builder">
-            <h2 id="drinkHeader"></h2>
             <h3>Drink Builder</h3>
             <p style="font-size: 18px">
-                Create a custom drink.<br/>
+                Create a custom drink.
+                <br />
             </p>
-    
-            <label class="text">
-                Name of drink:
-                <input type="text" onchange="nondari.setDrinkName(this.value)">
-            </label>
-            
-            <label class="text">
-                Category:
-                <select id="selectCategory" onchange="nondari.setCategoryType(this.value)"></select>
-                </select>
-            </label>
-            
-            <label class="text">
-                Glass type:
-                <select id="selectGlass" onchange="nondari.setGlassType(this.value)"></select>
-                </select>
-            </label>
+
+            <div id="qrlimit" style='font-size: 12px'>
+                character allotmet for qr code:
+                <span id='qr_limit_current'></span> / <span id='qr_limit_max'></span>
+            </div>
+            <div id='qrerr' class='hidden'>
+                There is too much data to represent in a QR Code. If you wish to have a QR Code created for your drink,
+                consider trimming your instructions or prelude.
+            </div>
+            <button class='btn btn-xs btn-primary' onclick="nondari.CreateDrink()">Create Drink</button><br />
+
+            <div class='text'> <label class="text">
+                    Name of drink:
+                    <input type="text" onchange="nondari.setDrinkName(this.value)">
+                </label>
+            </div>
+
+            <div class='text'>
+                <label>
+                    Prelude:
+                    <textarea id="area_prelud" maxlength="500" style='height: 50px'
+                        onchange="nondari.setPrelude(this.value)"></textarea>
+                </label>
+            </div>
+
+            <div class='text'>
+                <label>
+                    Instructions:
+                    <textarea id="area_prelud" maxlength="500" style='height: 50px'
+                        onchange="nondari.setInstructions(this.value)"></textarea>
+                </label>
+            </div>
+
+
+            <div class='text'>
+                <label class="text">
+                    Category:
+                    <select id="selectCategory" onchange="nondari.setCategoryType(this.value)"></select>
+                    </select>
+                </label>
+            </div>
+
+            <div>
+                <label class="text">
+                    Glass type:
+                    <select id="selectGlass" onchange="nondari.setGlassType(this.value)"></select>
+                    </select>
+                </label>
+            </div>
 
 
             <div class="grid" style="margin-right: 25%">
-                    <span>
-                        <span style="display: flex;">
-                             <h3 style="margin-top: 5px">Ingredients</h3>
-                             <button class="btn btn-xs btn-primary" style="margin-left: 10px;" onclick="nondari.addIngredient()"> +</button>
-                        </span>
-                        <ul id="drinkIngredientsEdit"></ul>
-                        <ul id="drinkIngredients"></ul>
+                <span>
+                    <span style="display: flex;">
+                        <h3 style="margin-top: 5px">Ingredients</h3>
+                        <button class="btn btn-xs btn-primary" style="margin-left: 10px;"
+                            onclick="nondari.addIngredient()"> +</button>
                     </span>
-    
-                    <div id="svg_placement" class="drawing">
-                        <div id="svg">
-                        </div>
+                    <ul id="drinkIngredientsEdit"></ul>
+                    <ul id="drinkIngredients"></ul>
+                </span>
+
+                <div id="svg_placement" class="drawing">
+                    <div id="svg">
                     </div>
-                    <div id="svgtmp" class="hidden"></div>
-    
                 </div>
+                <div id="svgtmp" class="hidden"></div>
+
+            </div>
 
         </div>
     </div>
+
+    <footer class="footer">
+            &copy;2019 Nondari
+            <span style='float: right'>
+                <a href='/about.html'>About</a>
+                <a href="https://www.github.com/0xnf/nondari">GitHub</a>
+            </span>
+        </footer>
 
 </body>
 

@@ -222,6 +222,10 @@ function locationHashChanged(): void {
         return;
     }
     else if (page === PageTypes.Drink || page === 'drinks') {
+        if (window.location.hash.any() || window.location.search.any()) {
+            $('#drinkNoDrink').addClass('hidden');
+            $('#drinkBase').removeClass('hidden');
+        }
         DrawDrink();
         return;
     } else if (page === 'builder') {

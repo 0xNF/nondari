@@ -1,3 +1,4 @@
+import '../js/qrcode.min.js';
 import { Category } from '../models/Category';
 import { IDrink } from '../models/IDrink';
 import { makeCategoryId } from './CategoryService';
@@ -13,6 +14,11 @@ import { IDrinkSearchResults } from '../models/IDrinkSearchResults';
 import { IDrinkEvaluation } from '../models/IDrinkEvaluation';
 import { DrawIngredientSVG } from './SVGService';
 import { StorageAddPantryItem, StorageClearPantry, StorageRemovePantryItem } from './StorageService';
+import { DecodeDrink } from './BuilderService';
+import { ISelectedDrink } from '../models/SelectedDrinkObject';
+import { DisplayDrink } from './DrinkDisplayService';
+import { QRDataLimit_AlphaNumeric } from './QRCodeService';
+import { Glasses } from '../models/IGlass';
 
 
 /* Sidebar drawing */
@@ -30,36 +36,70 @@ function toggleDrinkList(): void {
     Settings.sidebar.expanded = drinkListExpanded;
 }
 
-function populateCategories(categories: Array<Category>): void {
+
+function populateCategoriesMain(categories: Array<Category>): void {
     categories.forEach((x) => {
-        const catheader = $(`<div id='drink_category_header_${x.id}'>`).addClass('drink_category_header').append('<h3>').text(x.name);
-        const l = catheader.append(`<ul id='drink_category_list_${x.id}'>`);
-        $('#drinkslistcontainer').append(l);
+        const catheader = $(`<div id='drink_category_header_main_${x.id}'>`).addClass('drink_category_header_main').append('<h3>').text(x.name);
+        const l = catheader.append(`<ul id='drink_category_list_main_${x.id}'>`);
+        $(`#drinkslistcontainer_main`).append(l);
     });
 }
 
-function populateDrinksMenu(universe: Array<IDrink>): void {
+function populateCategoriesSide(categories: Array<Category>): void {
+    categories.forEach((x) => {
+        const catheader = $(`<div id='drink_category_header_side_${x.id}'>`).addClass('drink_category_header_side').append('<h3>').text(x.name);
+        const l = catheader.append(`<ul id='drink_category_list_side_${x.id}'>`);
+        $(`#drinkslistcontainer`).append(l);
+    });
+}
+
+function populateDrinksMenuMain(universe: Array<IDrink>): void {
     function whichList(cat: string): JQuery<HTMLElement> {
-        const ul = $('#drink_category_list_' + makeCategoryId(cat));
+        const ul = $(`#drink_category_list_main_${makeCategoryId(cat)}`);
         return ul;
     }
 
     universe.forEach((x: IDrink) => {
-        const a: JQuery<HTMLElement> = $('<a>').attr('href', 'drinks.html#' + x.DrinkId).addClass('sidelink');
-        const obj: JQuery<HTMLElement> = $('<li>').attr('id', 'li_drink_' + x.DrinkId) .append(a);
+        const a: JQuery<HTMLElement> = $('<a>').attr('href', 'drinks.html#' + x.DrinkId).addClass('mainlink');
+        const obj: JQuery<HTMLElement> = $('<li>').attr('id', 'li_drink_main' + x.DrinkId).append(a);
         a.text(x.Name);
         const ul: JQuery<HTMLElement> = whichList(x.Category);
         ul.append(obj);
     });
 }
 
-function DrawSidebar(categories: Array<Category>, drinks: Array<IDrink>): void {
-    populateCategories(categories);
-    populateDrinksMenu(drinks);
-    toggleDrinkList();
+function populateDrinksMenuSide(universe: Array<IDrink>): void {
+    function whichList(cat: string): JQuery<HTMLElement> {
+        const ul = $(`#drink_category_list_side_${makeCategoryId(cat)}`);
+        return ul;
+    }
+
+    universe.forEach((x: IDrink) => {
+        const a: JQuery<HTMLElement> = $('<a>').attr('href', 'drinks.html#' + x.DrinkId).addClass('sidelink');
+        const obj: JQuery<HTMLElement> = $('<li>').attr('id', 'li_drink_side' + x.DrinkId) .append(a);
+        a.text(x.Name);
+        const ul: JQuery<HTMLElement> = whichList(x.Category);
+        ul.append(obj);
+    });
 }
 
+function populateNavbarDrinkList(universe: Array<IDrink>) {
+    universe.forEach((x: IDrink) => {
+        $('#navdrinklist').append($('<a>').addClass('dropdown-item').attr('href', `drinks.html#${x.DrinkId}`).text(x.Name));
+    });
+}
 
+function DrawMainList(categories: Array<Category>, drinks: Array<IDrink>): void {
+    populateCategoriesMain(categories);
+    populateDrinksMenuMain(drinks);
+}
+
+function DrawSidebar(categories: Array<Category>, drinks: Array<IDrink>): void {
+    populateCategoriesSide(categories);
+    populateDrinksMenuSide(drinks);
+    populateNavbarDrinkList(drinks);
+    toggleDrinkList();
+}
 
 /* Ingredient Display */
 function populateDrinksWithThisIngredient(drinks: Array<IDrink>): void {
@@ -130,7 +170,6 @@ function EliminatePantry(): void {
     SearchObject._InventoryIds.clear();
 }
 
-
 function removeFromYourPantry(ing: IIngredientNode): boolean {
     for (let i = 0; i < SearchObject.Inventory.length; i++) {
         if (SearchObject.Inventory[i].id === ing.id) {
@@ -156,7 +195,6 @@ function redrawPantry(): void {
         $('#your_pantry').append(span);
     });
 }
-
 
 function populateIngredientTree(branches: Array<IIngredientNode>, SearchObject: ISearchObj, options: ITreeSettings = Settings.tree): void {
     redrawPantry();
@@ -310,13 +348,14 @@ function showYourDrinks(drinksResults: IDrinkSearchResults): void {
 
 /* Builder Display */
 function DrawBuilder() {
+    $('#qr_limit_max').text(QRDataLimit_AlphaNumeric);
     const sel_glass = $('#selectGlass');
     const sel_cat = $('#selectCategory');
     sel_glass.empty();
-    Globals.Glasses.forEach((x) => {
-        const opt = $('<option>').attr('id', `select_glass_${x.toLocaleLowerCase()}`);
-        opt.val(String(x));
-        opt.text(String(x));
+    Glasses.forEach((x) => {
+        const opt = $('<option>').attr('id', `select_glass_${x.Name}`);
+        opt.val(String(x.Name));
+        opt.text(String(x.Name));
         sel_glass.append(opt);
     });
     Globals.Categories.forEach((x) => {
@@ -328,9 +367,41 @@ function DrawBuilder() {
 }
 
 
+/* Custom Display */
+async function DrawCustom() {
+    if (window.location.search.any()) {
+        const drink: IDrink = DecodeDrink(window.location.toString());
+        console.log(drink);
+        const sdo: ISelectedDrink = {
+            Builder: false,
+            Drink: drink,
+            Optionals: [],
+            Substitutions: {},
+        };
+        DisplayDrink(sdo);
+        DisplayQR(window.location.toString());
+        const title = drink.Name + ' - Nondari';
+        document.title = title;
+        console.log(window.document.title);
+    }
+}
+
+function DisplayQR(qrdata: string) {
+    console.log(qrdata);
+    const qrcode = new QRCode(document.getElementById('qrcode'), {
+        text: qrdata,
+        width: 128,
+        height: 128,
+        colorDark : '#000000',
+        colorLight : '#ffffff',
+        correctLevel : QRCode.CorrectLevel.L
+    });
+}
+
 export {
     DrawIngredient,
     DrawSidebar,
+    DrawMainList,
     makeCategoryId,
     toggleDrinkList,
     displayIngredient,
@@ -338,4 +409,5 @@ export {
     showYourDrinks,
     EliminatePantry,
     DrawBuilder,
+    DrawCustom,
 };

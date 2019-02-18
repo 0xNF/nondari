@@ -5,17 +5,19 @@ import { IIngredient, IIngredientNode } from '../models/IIngredient';
 import { DFS, ITree, NoSiblings } from '../models/ITree';
 import { IDisplayUnit, IUnit } from '../models/IUnit';
 import { UnitVal2Unit } from './UnitService';
-import { IngredientVal2IngredientNode } from './IngredientService';
-import { displayDrink } from './DrinkDisplayService';
+import { IngredientVal2IngredientNode, EncodeIngredientForUrl, DecodeIngredientFromUrl } from './IngredientService';
+import { DisplayDrink } from './DrinkDisplayService';
 import { ISelectedDrink } from '../models/SelectedDrinkObject';
+import { Category } from '../models/Category';
+import { QRDataLimit_AlphaNumeric } from './QRCodeService';
 
 interface IAddedIngredient {
     id: number;
     ingredient: IIngredient;
 }
 
+let qrCodeAllotment = 0;
 const units: Array<string> = [];
-
 const AddedIngredients: Array<IAddedIngredient> = [];
 let timesAdded: number = 0;
 
@@ -29,25 +31,39 @@ const DrinkToDraw: IDrink = {
     Instructions: '',
 };
 
+function updateQRCodeAllotment(textOld: string, textNew: string) {
+    qrCodeAllotment -= textOld.length;
+    qrCodeAllotment += textNew.length;
+    $('#qr_limit_current').text(qrCodeAllotment);
+}
+
+
 async function setDrinkName(text: string): Promise<void> {
-    console.log('drink name:');
-    console.error(text);
+    updateQRCodeAllotment(DrinkToDraw.Name, text);
     DrinkToDraw.Name = text;
     await BuilderDraw();
 }
 
 async function setCategoryType(val: string): Promise<void> {
-    console.log('drink category raw:');
-    console.log(val);
     DrinkToDraw.Category = val;
     await BuilderDraw();
 }
 
 async function setGlassType(val: string): Promise<void> {
-    console.log('drink glass raw:');
-    console.log(val);
     DrinkToDraw.Glass = val;
     await BuilderDraw();
+}
+
+function setPrelude(val: string) {
+    updateQRCodeAllotment(DrinkToDraw.Prelude, val);
+    DrinkToDraw.Prelude = val;
+    console.log(val);
+}
+
+function setInstructions(val: string) {
+    updateQRCodeAllotment(DrinkToDraw.Instructions, val);
+    DrinkToDraw.Instructions = val;
+    console.log(val);
 }
 
 async function pushIngredient(globalId: number, ingredient: IIngredient) {
@@ -58,7 +74,6 @@ async function pushIngredient(globalId: number, ingredient: IIngredient) {
     AddedIngredients.push(ai);
     DrinkToDraw.Ingredients.clear();
     AddedIngredients.forEach(x => DrinkToDraw.Ingredients.push(x.ingredient));
-    console.log(DrinkToDraw);
     BuilderDraw();
 }
 
@@ -77,6 +92,7 @@ async function removeIngredient(gloabalId: number): Promise<void> {
 /* also functions as an init function when passed parameters */
 async function BuilderDraw(glass?: string, category?: string) {
 
+    updateQRCodeAllotment('', '');
     /* populate initial units */
     if (units.any()) {
         Globals.Drinks.map(x => x.Ingredients.map(y => y.Unit)).reduce((p, c) => {
@@ -102,7 +118,7 @@ async function BuilderDraw(glass?: string, category?: string) {
         Substitutions: {},
         Builder: true
     };
-    displayDrink(sdo);
+    DisplayDrink(sdo);
 }
 
 
@@ -134,7 +150,6 @@ function assignUnitPulldown(ingredientId: number, pulldown: JQuery<HTMLElement>)
 
     // refresh available units
     /* populate units */
-    console.log(cat);
     cat.forEach((x: IDisplayUnit) => {
         const opt = $('<option>');
         opt.val(x.Id);
@@ -173,8 +188,6 @@ function createIngredientPulldown(base: string, unitPulldown: JQuery<HTMLElement
         }
         ingredient.IngredientName = node.name;
         ingredient.IngredientId = node.id;
-        console.log('Ingredient Chosen:');
-        console.log(node);
     });
 
     label.append(sel);
@@ -192,8 +205,6 @@ function createUnitPulldown(base: string, ingredient: IIngredient): [JQuery<HTML
         if (!u) {
             return; // ERROR
         }
-        console.log('Unit Chosen: ');
-        console.log(u);
         ingredient.Unit = u.Name;
     });
 
@@ -209,7 +220,6 @@ function createDisplayTextInput(base: string, ingredient: IIngredient): JQuery<H
 
     inp.on('change', (x: any) => {
         const text = x.target.value as string;
-        console.log('Display text: ' + text);
         if (!text || text.length === 0) {
             ingredient.DisplayText = undefined;
         } else {
@@ -233,7 +243,6 @@ function createQuantityTextInput(base: string, ingredient: IIngredient): JQuery<
             console.error(`attempted to parse float for builder quantity, but failed. Supplied value was invalid: ${quantity}`);
             return;
         }
-        console.log('quantity chosen: ' + quantity);
         ingredient.Quantity = String(float);
     });
 
@@ -251,8 +260,6 @@ function createIsGarnishButton(base: string, ingredient: IIngredient): JQuery<HT
         isOn = !isOn;
         isOn ? but.attr('checked', 'true') : but.removeAttr('checked');
         // todo store check value somewhere
-        console.log(but.attr('checked'));
-        console.log('garnish change to ' + isOn);
         ingredient.IsGarnish = isOn;
     });
 
@@ -264,8 +271,6 @@ function createAcceptButton(base: string, iid: number, ingredient: IIngredient):
     const id = `${base}_accept_button`;
     const but = $('<button>').attr('id', id).addClass(['btn', 'btn-xs', 'btn-primary']).text('OK');
     but.on('click', async () => {
-        console.log('accept ingredient clicked');
-        console.log(ingredient);
         await pushIngredient(iid, ingredient);
         $(`#addIngredient_${timesAdded}_li`).remove();
     });
@@ -337,13 +342,87 @@ async function addIngredient(): Promise<void> {
 
 }
 
+const Keys = {
+    NameKey: 'name',
+    CatKey: 'category',
+    GlassKey: 'glass',
+    PreludeKey: 'prelude',
+    InstructionsKey: 'instructions',
+    IngredientKey: 'ingredient'
+};
 
+function CreateDrink() {
+
+    const params: URLSearchParams = new URLSearchParams();
+    params.set(Keys.NameKey, DrinkToDraw.Name);
+    params.set(Keys.CatKey, DrinkToDraw.Category);
+    params.set(Keys.GlassKey, DrinkToDraw.Glass);
+    params.set(Keys.PreludeKey, DrinkToDraw.Prelude);
+    params.set(Keys.InstructionsKey, DrinkToDraw.Instructions);
+
+    for (let i = 0; i < DrinkToDraw.Ingredients.length; i++) {
+        const ing = DrinkToDraw.Ingredients[i];
+        params.append(Keys.IngredientKey, EncodeIngredientForUrl(ing));
+    }
+
+    const hash: string = params.toString();
+    const url: string = `${window.location.origin}/custom.html?${hash}`;
+
+    if (url.length > QRDataLimit_AlphaNumeric) {
+        console.error('Supplied drink is too big to make a QR code for.');
+    }
+
+    window.location.assign(url); // Go!
+}
+
+function DecodeDrink(urlstr: string): IDrink {
+    const url = new URL(urlstr);
+    console.log(url);
+    const params: URLSearchParams = new URLSearchParams(url.search);
+    const name = params.get(Keys.NameKey);
+    const category = params.get(Keys.CatKey);
+    const glass = params.get(Keys.GlassKey);
+    const prelude = params.get(Keys.PreludeKey);
+    const instructions = params.get(Keys.InstructionsKey);
+    const ingredients_raw = params.getAll(Keys.IngredientKey);
+    if ( (!name || !name.any()) || (!category || !category.any()) || (!glass || !glass.any()) || (!ingredients_raw || !ingredients_raw.any()) ) { // todo add checks against prelude and instructions?
+        console.error('failed to decode drink uri, url was invalid');
+        return;
+    }
+
+    const ingredients: Array<IIngredient> = [];
+    for (let i = 0; i < ingredients_raw.length; i++) {
+        const raw = ingredients_raw[i];
+        const ing: IIngredient = DecodeIngredientFromUrl(raw);
+        if (!ing) {
+            console.error('failed to decode ingredient, raw string was invalid');
+            return;
+        }
+        ingredients.push(ing);
+    }
+
+    const drink: IDrink = {
+        DrinkId: -1,
+        Category: category,
+        Glass: glass,
+        Instructions: instructions,
+        Prelude: prelude,
+        Name: name,
+        Ingredients: ingredients
+    };
+
+    return drink;
+}
 
 export {
     setDrinkName,
     setCategoryType,
     setGlassType,
+    setPrelude,
+    setInstructions,
     BuilderDraw,
     removeIngredient,
     addIngredient,
+    CreateDrink,
+    DecodeDrink,
 };

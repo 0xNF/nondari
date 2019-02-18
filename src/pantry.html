@@ -18,42 +18,50 @@
 
 <body>
 
-    <nav class="navpush navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="/index.html">Nondari</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-    
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/index.html">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                            More
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="/index.html">Drink List</a>
-                            <a class="dropdown-item" href="#">Pantry</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="/about.html">About</a>
-                        </div>
-                    </li>
-                </ul>
-                <form class="form-inline my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </form>
-            </div>
-        </nav>
+        <nav class="navpush navbar navbar-expand-lg navbar-dark bg-dark">
+                <a class="navbar-brand" href="/index.html">Nondari</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+        
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/index.html">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/builder.html">Builder</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                More
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="/drinks.html">Drink List</a>
+                                <a class="dropdown-item" href="#">Pantry</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="/about.html">About</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                Drinks
+                            </a>
+                            <div id="navdrinklist" class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            </div>
+                        </li>
+                    </ul>
+                    <form class="form-inline my-2 my-lg-0">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                </div>
+            </nav>
 
-    <div class="sidenav">
+    <div class="sidenav sidenavpush">
         <button onclick="nondari.toggleDrinkList()">
             <span id="drinklistarrow"></span>Drink List
         </button>
@@ -64,7 +72,7 @@
         <a href="/builder.html">Drink Builder</a>
     </div>
 
-    <div class="main">
+    <div class="main mainpush">
         <div class="main_pantry">
             <h2 id="drinkHeader"></h2>
             <h3>Pantry</h3>
@@ -174,6 +182,14 @@
             </div>
         </div>
     </div>
+
+    <footer class="footer">
+            &copy;2019 Nondari
+            <span style='float: right'>
+                <a href='/about.html'>About</a>
+                <a href="https://www.github.com/0xnf/nondari">GitHub</a>
+            </span>
+        </footer>
 
 </body>
 

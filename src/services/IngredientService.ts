@@ -3,8 +3,10 @@ import { KVP } from '../models/KVP';
 import { IDrinkSearchResults } from '../models/IDrinkSearchResults';
 import { IDrinkEvaluation } from '../models/IDrinkEvaluation';
 import { Globals } from './Globals';
+import { UnitString2Unit } from './UnitService';
+import { IUnit } from '../models/IUnit';
 
-interface IUnit {
+interface IUnitPlural {
     unit: string;
     plural: string;
 }
@@ -38,7 +40,7 @@ function makeIngredientIdForHTML(ingredient: IIngredient): string {
 }
 
 
-const UnitAndPlurals: ReadonlyArray<IUnit> = [
+const UnitAndPlurals: ReadonlyArray<IUnitPlural> = [
     {unit: 'oz', plural: 'oz'},
     {unit: 'bs', plural: 'bs'},
     {unit: 'ts', plural: 'ts'},
@@ -74,6 +76,76 @@ function IngredientVal2IngredientNode(val: number): IIngredientNode {
     console.error(`failed to find an ingredient of the value given: (${val})`);
 }
 
+function EncodeIngredientForUrl(ingredient: IIngredient): string {
+   return `${ingredient.IngredientId}_${ingredient.Quantity}_${ingredient.Unit}_${ingredient.IsGarnish}_${ingredient.DisplayOrder}_${ingredient.DisplayText ? ingredient.DisplayText : ''}`;
+}
+
+function DecodeIngredientFromUrl(fragment: string): IIngredient {
+    const splits = fragment.split('_');
+    if (splits.length !== 6) {
+        console.error(`failed to decode drink, an ingredient was malformed. Incorrect number of separators: ${fragment}`);
+        return;
+    }
+    const ingId_raw = splits[0];
+    const quantity_raw = splits[1];
+    const unit_raw = splits[2];
+    const garnish_raw = splits[3];
+    const displayorder_raw = splits[4];
+    const dtext_raw = splits[5];
+
+    /* Ingredient Id */
+    const ingid = parseInt(ingId_raw);
+    if (isNaN(ingid)) {
+        console.error(`failed to decode ingredient, supplied ingredient id was invalid: ${ingId_raw}`);
+        return undefined;
+    }
+    const realIngredient: IIngredientNode = Globals.IngredientFlat[ingid];
+    if (!realIngredient) {
+        console.error(`failed to decode ingredient, supplied ingredient id was not found: ${ingId_raw}`);
+        return undefined;
+    }
+
+    /* Display Order */
+    const dorder = parseInt(displayorder_raw);
+    if (isNaN(dorder)) {
+        console.error(`failed to decode ingredient, supplied ingredient display order was invalid: ${displayorder_raw}`);
+        return undefined;
+    }
+
+    /* Is Garnish */
+    const isGarnishCheck = (garnish_raw === 'true' || garnish_raw === 'false');
+    if (!isGarnishCheck) {
+        console.error(`Failed to decode ingredient, supplied IsGarnish check wasn't valid: ${garnish_raw}`);
+    }
+    const isGarnish = garnish_raw === 'true';
+
+    /* Unit */
+    const unit: IUnit = UnitString2Unit(unit_raw);
+    if (!unit) {
+        console.error(`Failed to decode ingredient, supplied unit check wasn't valid: ${unit_raw}`);
+        return undefined;
+    }
+
+    /* Quantity */
+    const quantity = quantity_raw; /* we have no special checks yet */
+
+    /* Display Text */
+    /* todo sanitize dispaly text input? */
+    const dtext = dtext_raw;
+
+
+    const ing: IIngredient = {
+        IngredientId: realIngredient.id,
+        DisplayOrder: dorder,
+        IsGarnish: isGarnish,
+        Unit: unit.Name,
+        Quantity: quantity,
+        IngredientName: realIngredient.name,
+        DisplayText: dtext
+    };
+
+    return ing;
+}
 
 /**
  * Given a pantry of ingredients, searches through a drink list
@@ -161,4 +233,6 @@ export {
     UnitAndPlurals,
     GetRecommendedIngredients,
     IngredientVal2IngredientNode,
+    EncodeIngredientForUrl,
+    DecodeIngredientFromUrl,
 };
