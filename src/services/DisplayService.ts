@@ -36,47 +36,23 @@ function toggleDrinkList(): void {
     Settings.sidebar.expanded = drinkListExpanded;
 }
 
-
-function populateCategoriesMain(categories: Array<Category>): void {
+function populateCategories(categories: Array<Category>, appendId: string, appendTo: JQuery<HTMLElement>): void {
     categories.forEach((x) => {
-        const catheader = $(`<div id='drink_category_header_main_${x.id}'>`).addClass('drink_category_header_main').append('<h3>').text(x.name);
-        const l = catheader.append(`<ul id='drink_category_list_main_${x.id}'>`);
-        $(`#drinkslistcontainer_main`).append(l);
+        const catheader = $(`<div id='drink_category_header_${appendId}_${x.id}'>`).addClass(`drink_category_header_${appendId}`).append('<h3>').text(x.name);
+        const l = catheader.append(`<ul id='drink_category_list_${appendId}_${x.id}'>`);
+        appendTo.append(l);
     });
 }
 
-function populateCategoriesSide(categories: Array<Category>): void {
-    categories.forEach((x) => {
-        const catheader = $(`<div id='drink_category_header_side_${x.id}'>`).addClass('drink_category_header_side').append('<h3>').text(x.name);
-        const l = catheader.append(`<ul id='drink_category_list_side_${x.id}'>`);
-        $(`#drinkslistcontainer`).append(l);
-    });
-}
-
-function populateDrinksMenuMain(universe: Array<IDrink>): void {
+function populateDrinksMenu(universe: Array<IDrink>, appendId: string, classArr: Array<string>): void {
     function whichList(cat: string): JQuery<HTMLElement> {
-        const ul = $(`#drink_category_list_main_${makeCategoryId(cat)}`);
+        const ul = $(`#drink_category_list_${appendId}_${makeCategoryId(cat)}`);
         return ul;
     }
 
     universe.forEach((x: IDrink) => {
-        const a: JQuery<HTMLElement> = $('<a>').attr('href', 'drinks.html#' + x.DrinkId).addClass('mainlink');
-        const obj: JQuery<HTMLElement> = $('<li>').attr('id', 'li_drink_main' + x.DrinkId).append(a);
-        a.text(x.Name);
-        const ul: JQuery<HTMLElement> = whichList(x.Category);
-        ul.append(obj);
-    });
-}
-
-function populateDrinksMenuSide(universe: Array<IDrink>): void {
-    function whichList(cat: string): JQuery<HTMLElement> {
-        const ul = $(`#drink_category_list_side_${makeCategoryId(cat)}`);
-        return ul;
-    }
-
-    universe.forEach((x: IDrink) => {
-        const a: JQuery<HTMLElement> = $('<a>').attr('href', 'drinks.html#' + x.DrinkId).addClass('sidelink');
-        const obj: JQuery<HTMLElement> = $('<li>').attr('id', 'li_drink_side' + x.DrinkId) .append(a);
+        const a: JQuery<HTMLElement> = $('<a>').attr('href', 'drinks.html#' + x.DrinkId).addClass(classArr);
+        const obj: JQuery<HTMLElement> = $('<li>').attr('id', `li_drink_${appendId}` + x.DrinkId).append(a);
         a.text(x.Name);
         const ul: JQuery<HTMLElement> = whichList(x.Category);
         ul.append(obj);
@@ -90,13 +66,13 @@ function populateNavbarDrinkList(universe: Array<IDrink>) {
 }
 
 function DrawMainList(categories: Array<Category>, drinks: Array<IDrink>): void {
-    populateCategoriesMain(categories);
-    populateDrinksMenuMain(drinks);
+    populateCategories(categories, 'main', $('#drinkslistcontainer_main'));
+    populateDrinksMenu(drinks, 'main', ['mainlink']);
 }
 
 function DrawSidebar(categories: Array<Category>, drinks: Array<IDrink>): void {
-    populateCategoriesSide(categories);
-    populateDrinksMenuSide(drinks);
+    populateCategories(categories, 'side', $('#drinkslistcontainer'));
+    populateDrinksMenu(drinks, 'side', ['sidelink']);
     populateNavbarDrinkList(drinks);
     toggleDrinkList();
 }

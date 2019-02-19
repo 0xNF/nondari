@@ -225,14 +225,17 @@ function locationHashChanged(): void {
         if (window.location.hash.any() || window.location.search.any()) {
             $('#drinkNoDrink').addClass('hidden');
             $('#drinkBase').removeClass('hidden');
+            DrawDrink();
+        } else {
+            $('#drinkNoDrink').removeClass('hidden');
+            $('#drinkBase').addClass('hidden');
         }
-        DrawDrink();
         return;
     } else if (page === 'builder') {
         DrawBuilder();
         return;
     }
-    window.document.title = 'Nondari';
+    // window.document.title = 'Nondari';
 }
 
 export { decodeDrinkNav, makeNavForDrink, findPage, drinkhrefmaker, PageTypes, locationHashChanged };
