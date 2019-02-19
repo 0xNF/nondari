@@ -221,7 +221,31 @@ function DoErrors(check?: Array<string>): boolean {
     }
     return true;
 }
+
+/**
+ * In the event a user clicks back to this page, the regular on-input-change events will not have fired.
+ * This method ensures that the `DrinkToDraw` is filled the correct inputs
+ */
+function scanForParams() {
+    // TODO selected options are not preserved across pages.
+    const inp_drinkname = $('#inputName');
+    const inp_prelude = $('#area_prelude');
+    const inp_instructions = $('#area_instructions');
+    const sel_glass = $('#selectGlass');
+    const sel_category = $('#selectCategory');
+
+    DrinkToDraw.Name = inp_drinkname.val() as string;
+    DrinkToDraw.Prelude = (inp_prelude.val() as string).any() ? (inp_prelude.val() as string) : undefined;
+    DrinkToDraw.Instructions = (inp_instructions.val() as string).any() ? (inp_instructions.val() as string) : undefined;
+    DrinkToDraw.Glass = sel_glass.val() as string;
+    DrinkToDraw.Category = sel_category.val() as string;
+
+
+    // TODO ingredients
+}
 function CreateDrink() {
+
+    scanForParams();
 
     if (!DoErrors()) {
         return;
@@ -287,7 +311,6 @@ function DecodeDrink(urlstr: string): IDrink {
     return drink;
 }
 
-
 const IngredientToEdit: IIngredient = {
     DisplayOrder: 0,
     DisplayText: undefined,
@@ -345,6 +368,7 @@ function InitBuilder() {
         }
     }
 
+    /* get changing quantities */
     function QuantityChanged(x: string) {
         const quantity = x;
         if (quantity === 'half' || quantity === 'fill' || quantity === 'multiple') {
