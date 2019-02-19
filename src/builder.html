@@ -93,8 +93,13 @@
             <button class='btn btn-xs btn-primary' onclick="nondari.CreateDrink()">Create Drink</button><br />
 
             <div class="entry_grid text">
+                <span  id='errorContainer' class='ErrorText hidden'>
+                    <ul id="errorList">
+
+                    </ul>
+                </span>
                 <label class="entry_grid_left" for="inputName">Name of Drink:</label>
-                <input class="entry_grid_right" id="inputName" type="text" onchange="nondari.setDrinkName(this.value)">
+                <input class="entry_grid_right" id="inputName" type="text" onchange="nondari.setDrinkName(this.value)" placeholder="Name your drink">
                 <br class="spanner" />
                 <label class="entry_grid_left" for="selectCategory">Category:</label>
                 <select class="entry_grid_right" id="selectCategory"
@@ -105,17 +110,18 @@
                 <br class="spanner" />
                 <label class="entry_grid_left" for="area_prelude">Prelude:</label>
                 <textarea class="entry_grid_right entry_textarea" id="area_prelude" maxlength="500"
-                    onchange="nondari.setPrelude(this.value)"></textarea>
+                    onchange="nondari.setPrelude(this.value)" placeholder="Have anything interesting to say about this drink?"></textarea>
                 <br class="spanner" />
                 <label class="entry_grid_left" for="area_instructions">Instructions:</label>
                 <textarea class="entry_grid_right entry_textarea" id="area_instructions" maxlength="500"
-                    onchange="nondari.setInstructions(this.value)"></textarea>
+                    onchange="nondari.setInstructions(this.value)" placeholder="How to assemble the drink"></textarea>
             </div>
 
 
             <span>
-                <button class="btn btn-sm btn-primary" style="margin-left: 10px;"
-                    onclick="$('#IngredientEntry').removeClass('hidden').addClass('entry_grid')">+ Add Ingredient</button>
+                <button id="addIngredientButton" class="btn btn-sm btn-primary" style="margin-left: 10px;"
+                    onclick="$('#IngredientEntry').removeClass('hidden').addClass('entry_grid')">+ Add
+                    Ingredient</button>
                 <div id="IngredientEntry" class="IngredientEntry text hidden">
                     <label for="IngredientList">Ingredient</label>
                     <select id="IngredientList"></select>
@@ -124,14 +130,52 @@
                     <select id="UnitList"></select>
 
                     <label for="QuantitySelect">Quantity</label>
-                    <input id="QuantitySelect" type="text">
+                    <div id="QuantityInputTypes">
+                        <input id="QuantitySelect_Number" type="number" step="0.01" value="1">
+                        <select id="QuantitySelect_Glass" class="hidden">
+                            <option value="half">half glass</option>
+                            <option value="fill" selected="true">full glass</option>
+                        </select>
+                        <select id="QuantitySelect_Multiple" class="hidden">
+                            <option value="multiple">multiple</option>
+                            <option value="1" selected="true">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                            <option value="13">13</option>
+                            <option value="14">14</option>
+                            <option value="15">15</option>
+                            <option value="16">16</option>
+                            <option value="17">17</option>
+                            <option value="18">18</option>
+                            <option value="19">19</option>
+                            <option value="20">20</option>
+                        </select>
+                    </div>
+
+
+                    <label id="isGarnish" for="IsGarnishCheckbox" class="hidden">
+                        Is Garnish?
+                        <input id="IsGarnishCheckbox" type="checkbox">
+                    </label>
+
 
                     <label for="DisplayTextInput">Display Text</label>
-                    <input id="DisplayTextInput" type="text">
+                    <input id="DisplayTextInput" type="text" placeholder="Optional">
 
                     <span>
-                        <button class="btn btn-success btn-sm" onclick="$('#IngredientEntry').removeClass('entry_grid').addClass('hidden');nondari.addIngredient2()">Add</button>
-                        <button class="btn btn-danger btn-sm" onclick="$('#IngredientEntry').removeClass('entry_grid').addClass('hidden')">Cancel</button>
+                        <button class="btn btn-success btn-sm"
+                            onclick="nondari.addIngredient()">Add</button>
+                        <button class="btn btn-danger btn-sm"
+                            onclick="$('#IngredientEntry').removeClass('entry_grid').addClass('hidden')">Cancel</button>
                     </span>
                 </div>
 
@@ -162,4 +206,5 @@
 
     <script src="/main.bundle.js"></script>
 </body>
+
 </html>

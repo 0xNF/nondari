@@ -221,7 +221,7 @@ function calculateLiquidRatios(drink: IDrink): Array<IIngredientRatio> {
             rational_base: ratf,
             rational_float: ratf * 100,
             rational_integer: rati,
-            rowcount: Math.floor(rt)
+            rowcount: Math.ceil(rt)
         };
         return obj;
     });

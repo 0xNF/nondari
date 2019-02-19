@@ -248,6 +248,19 @@ body {
         border-radius : .2rem;
     }
 
+    .inputError {
+        border-color: red;
+        border-width: 2px;
+    }
+
+    .ErrorText {
+        color: red;
+    }
+
+    .builderIngredients {
+        
+    }
+
 @media only screen and (min-width: 768px) {
 
 
@@ -279,10 +292,16 @@ body {
 
     .editorGird {
         display: grid;
-        column-count: 2;
+        column-count: 3;
         width: 2px;
         font-size: 12px
     }
+
+    .builderIngredients {
+        grid-column: 3
+    }
+
+
 }
 
   @media screen and (max-height: 450px) {

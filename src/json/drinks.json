@@ -2930,7 +2930,7 @@
             "Ingredients": [
                 {
                     "IngredientId": 195,
-                    "Quantity": "handful",
+                    "Quantity": "multiple",
                     "Unit": "sprig",
                     "IngredientName": "Mint Sprig",
                     "DisplayText": "A handful of fresh mint sprigs",
@@ -4770,7 +4770,7 @@
             "Ingredients": [
                 {
                     "IngredientId": 196,
-                    "Quantity": "handful",
+                    "Quantity": "multiple",
                     "Unit": "leaf",
                     "IngredientName": "Mint Leaves",
                     "DisplayText": "Fresh mint leaves",
@@ -5540,7 +5540,7 @@
                 },
                 {
                     "IngredientId": 150,
-                    "Quantity": "handful",
+                    "Quantity": "multiple",
                     "Unit": "berry",
                     "IngredientName": "Berry",
                     "DisplayText": "8oz of assorted berries (if using strawberries, cut to match other berries size)",

@@ -19,7 +19,7 @@ function DrawDrink(): void {
     }
 
     if (SelectedDrinkObject.Drink) {
-        $('#li_drink_' + SelectedDrinkObject.Drink.DrinkId).addClass('liSelected');
+        $('#li_drink_side' + SelectedDrinkObject.Drink.DrinkId).addClass('liSelected');
         DisplayDrink(SelectedDrinkObject);
         window.document.title = SelectedDrinkObject.Drink.Name + ' - Nondari';
     }

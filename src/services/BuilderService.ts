@@ -19,7 +19,7 @@ interface IAddedIngredient {
 let qrCodeAllotment = 0;
 const units: Array<string> = [];
 const AddedIngredients: Array<IAddedIngredient> = [];
-let timesAdded: number = 0;
+let timesAdded = -1;
 
 const DrinkToDraw: IDrink = {
     Category: undefined,
@@ -112,7 +112,7 @@ function assignUnitPulldown(ingredientId: number, pulldown: JQuery<HTMLElement>)
     let path: ITree = null;
     for (let i = 0; i < Globals.ingredients.length; i++) {
         const tree: IIngredientNode = Globals.ingredients[i];
-        const res: IIngredientNode = NoSiblings(tree, {id: ingredientId, children: [] }, true);
+        const res: IIngredientNode = NoSiblings(tree, { id: ingredientId, children: [] }, true);
         if (res && res.id !== -1) {
             path = res;
             break;
@@ -142,192 +142,20 @@ function assignUnitPulldown(ingredientId: number, pulldown: JQuery<HTMLElement>)
         pulldown.append(opt);
     });
 
+    IngredientToEdit.Unit = cat[0].Unit.Name;
     return cat[0].Unit;
-}
-
-function createIngredientPulldown(base: string, unitPulldown: JQuery<HTMLElement>, ingredient: IIngredient): JQuery<HTMLElement> {
-    const id = `${base}_ingredient_select`;
-    const label = $('<label>').attr('for', id).text('Ingredient');
-    // create Ingredient Pulldown
-    const sel: JQuery<HTMLElement> = $('<select>').attr('id', id);
-    // // populate ingredient pulldown
-    // for (const key in Globals.IngredientFlat) {
-    //     const ingredient = Globals.IngredientFlat[key];
-    //     const symbol = getIngredientNodeSVGStyle(ingredient, Globals.ingredients);
-    //     if (symbol) { /* only symbolized ingredients */
-    //         const ingId = ingredient.id;
-    //         const ingName = ingredient.name;
-    //         const opt = $('<option>').attr('id', `${base}_ingredient_select_option_${ingId}`);
-    //         opt.val(ingId);
-    //         opt.text(ingName);
-    //         sel.append(opt);
-    //     }
-    // }
-    // when option select changes, reset the unit pulldown
-    // sel.on('change', () => {
-    //     const ingVal: number = parseInt(sel.val() as string);
-    //     ingredient.Unit = assignUnitPulldown(ingVal, unitPulldown).Name;
-    //     const node: IIngredientNode = IngredientVal2IngredientNode(ingVal);
-    //     if (!node) {
-    //         return; // ERROR
-    //     }
-    //     ingredient.IngredientName = node.name;
-    //     ingredient.IngredientId = node.id;
-    // });
-
-    label.append(sel);
-    return label;
-}
-
-function createUnitPulldown(base: string, ingredient: IIngredient): [JQuery<HTMLElement>, JQuery<HTMLElement>] {
-    const id =  `${base}_unit_select`;
-    const label = $('<label>').attr('for', id).text('Unit');
-    const sel: JQuery<HTMLElement> = $('<select>').attr('id', id);
-
-    sel.on('change', () => {
-        const unitVal: number = parseInt(sel.val() as string);
-        const u: IUnit = UnitVal2Unit(unitVal);
-        if (!u) {
-            return; // ERROR
-        }
-        ingredient.Unit = u.Name;
-    });
-
-    label.append(sel);
-
-    return [label, sel];
-}
-
-function createDisplayTextInput(base: string, ingredient: IIngredient): JQuery<HTMLElement> {
-    const id =  `${base}_displaytext_input`;
-    const label = $('<label>').attr('for', id).text('Display Text:');
-    const inp = $('<input>').attr('type', 'text').attr('id', id);
-
-    inp.on('change', (x: any) => {
-        const text = x.target.value as string;
-        if (!text || text.length === 0) {
-            ingredient.DisplayText = undefined;
-        } else {
-            ingredient.DisplayText = text;
-        }
-    });
-
-    label.append(inp);
-    return label;
-}
-
-function createQuantityTextInput(base: string, ingredient: IIngredient): JQuery<HTMLElement> {
-    const id = `${base}_quantity_input`;
-    const label = $('<label>').text('Quantity').attr('for', id);
-    const inp = $('<input>').attr('type', 'number').attr('step', '0.01').attr('id', id); // TODO we restrict users to numbers. No handfuls.
-    inp.val(1); // default 1
-    inp.on('change paste keyup', (x: any) => {
-        const quantity = x.target.value as string;
-        const float = parseFloat(quantity);
-        if (isNaN(float)) {
-            console.error(`attempted to parse float for builder quantity, but failed. Supplied value was invalid: ${quantity}`);
-            return;
-        }
-        ingredient.Quantity = String(float);
-    });
-
-    label.append(inp);
-    return label;
-}
-
-function createIsGarnishButton(base: string, ingredient: IIngredient): JQuery<HTMLElement> {
-    const id = `${base}_isgarnish_input`;
-    const label = $('<label>').text('Garnish?').attr('for', id);
-    const but = $('<input>').attr('id', id).attr('type', 'checkbox');
-    let isOn = false;
-    but.text('is garnish');
-    but.on('change', () => {
-        isOn = !isOn;
-        isOn ? but.attr('checked', 'true') : but.removeAttr('checked');
-        // todo store check value somewhere
-        ingredient.IsGarnish = isOn;
-    });
-
-    label.append(but);
-    return label;
-}
-
-function createAcceptButton(base: string, iid: number, ingredient: IIngredient): JQuery<HTMLElement> {
-    const id = `${base}_accept_button`;
-    const but = $('<button>').attr('id', id).addClass(['btn', 'btn-xs', 'btn-primary']).text('OK');
-    but.on('click', async () => {
-        await pushIngredient(iid, ingredient);
-        $(`#addIngredient_${timesAdded}_li`).remove();
-    });
-    return but;
-}
-
-function createDeleteButton(base: string, globalId: number): JQuery<HTMLElement> {
-    const id = `${base}_cancel_button`;
-    const but = $('<button>').attr('id', id).addClass(['btn', 'btn-xs', 'btn-danger']).text('X');
-    but.on('click', async () => {
-        $(`#${base}_li`).remove();
-        removeIngredient(globalId);
-        await BuilderDraw();
-    });
-    return but;
-}
-
-function createIngredientEditor(base: string, iid: number, ingredient: IIngredient): JQuery<HTMLElement> {
-    // the editing menu of the add ingredient.
-    // Not the same as the display menu of the ingredient.
-
-    const sp = $('<span>').addClass('editorGird').attr('id', `${base}_editor`);
-
-    const unitPulldown: [JQuery<HTMLElement>, JQuery<HTMLElement>] = createUnitPulldown(base, ingredient);
-    const ingPulldown = createIngredientPulldown(base, unitPulldown[1], ingredient);
-    const dtextInput = createDisplayTextInput(base, ingredient);
-    const qInput = createQuantityTextInput(base, ingredient);
-    const gbutton = createIsGarnishButton(base, ingredient);
-    const okButton = createAcceptButton(base, iid, ingredient);
-    const deleteButton = createDeleteButton(base, iid);
-
-    const buttonsSp = $('<span>').css('display', 'inline');
-    buttonsSp.append(okButton).append(deleteButton);
-
-    sp.append(ingPulldown);
-    sp.append(unitPulldown);
-    sp.append(dtextInput);
-    sp.append(qInput);
-    sp.append(gbutton);
-    sp.append(buttonsSp);
-
-    return sp;
-
 }
 
 async function addIngredient(): Promise<void> {
     timesAdded += 1;
-
-    const ingToEdit: IIngredient = {
-        DisplayOrder: 0,
-        DisplayText: undefined,
-        IngredientId: -1,
-        IngredientName: null,
-        Quantity: '1',
-        Unit: 'oz',
-        IsGarnish: false,
-    };
-
-    const baseId = `addIngredient_${timesAdded}`;
-
-    const editor = createIngredientEditor(baseId, timesAdded, ingToEdit);
-
-    const ul = $('#drinkIngredientsEdit');
-    const li = $('<li>').attr('id', `${baseId}_li`);
-
-    li.append(editor);
-    ul.append(li);
-
-
+    $('#IngredientEntry').removeClass('entry_grid').addClass('hidden');
+    console.log(IngredientToEdit);
+    const iing: IIngredient = JSON.parse(JSON.stringify(IngredientToEdit));
+    await pushIngredient(timesAdded, iing);
+    DoErrors([ErrorChecks.IngredientCount]);
 }
 
-const Keys = {
+const ParameterKeys = {
     NameKey: 'name',
     CatKey: 'category',
     GlassKey: 'glass',
@@ -336,18 +164,79 @@ const Keys = {
     IngredientKey: 'ingredient'
 };
 
+const ErrorChecks = {
+    DrinkName: 'name',
+    IngredientCount: 'ingredientcount',
+};
+
+function CheckErrors(check?: Array<string>): Array<string> {
+    const errArr: Array<string> = [];
+
+    /* Check Drink Name */
+    if (!check || !check.any() || check.contains(ErrorChecks.DrinkName)) {
+        if (!DrinkToDraw.Name || !DrinkToDraw.Name.any()) {
+            $('#inputName').addClass('inputError');
+            errArr.push('Drink cannot be nameless');
+        } else {
+            $('#inputName').removeClass('inputError');
+        }
+    }
+
+    /* check ingredients */
+    if (!check || !check.any() || check.contains(ErrorChecks.IngredientCount)) {
+        if (!DrinkToDraw.Ingredients.any()) {
+            errArr.push('Drink needs at least one ingredient');
+            $('#addIngredientButton').addClass('inputError');
+        } else {
+            $('#addIngredientButton').removeClass('inputError');
+        }
+    }
+
+
+    return errArr;
+}
+
+
+function DrawErrors(errors: Array<string>): void {
+    const errList = $('#errorList');
+    errList.empty();
+    for (let i = 0; i < errors.length; i++) {
+        const err = errors[i];
+        const li = $('<li>').text(err);
+        errList.append(li);
+    }
+    console.log('tried to create a drink but user has not submitted enough valid parameters');
+    return;
+}
+
+function DoErrors(check?: Array<string>): boolean {
+    const errors = CheckErrors(check);
+    const errorContainer = $('#errorContainer');
+    if (errors.any()) {
+        errorContainer.removeClass('hidden');
+        DrawErrors(errors);
+        return false;
+    } else {
+        errorContainer.addClass('hidden');
+    }
+    return true;
+}
 function CreateDrink() {
 
+    if (!DoErrors()) {
+        return;
+    }
+
     const params: URLSearchParams = new URLSearchParams();
-    params.set(Keys.NameKey, DrinkToDraw.Name);
-    params.set(Keys.CatKey, DrinkToDraw.Category);
-    params.set(Keys.GlassKey, DrinkToDraw.Glass);
-    params.set(Keys.PreludeKey, DrinkToDraw.Prelude);
-    params.set(Keys.InstructionsKey, DrinkToDraw.Instructions);
+    params.set(ParameterKeys.NameKey, DrinkToDraw.Name);
+    params.set(ParameterKeys.CatKey, DrinkToDraw.Category);
+    params.set(ParameterKeys.GlassKey, DrinkToDraw.Glass);
+    params.set(ParameterKeys.PreludeKey, DrinkToDraw.Prelude);
+    params.set(ParameterKeys.InstructionsKey, DrinkToDraw.Instructions);
 
     for (let i = 0; i < DrinkToDraw.Ingredients.length; i++) {
         const ing = DrinkToDraw.Ingredients[i];
-        params.append(Keys.IngredientKey, EncodeIngredientForUrl(ing));
+        params.append(ParameterKeys.IngredientKey, EncodeIngredientForUrl(ing));
     }
 
     const hash: string = params.toString();
@@ -364,13 +253,13 @@ function DecodeDrink(urlstr: string): IDrink {
     const url = new URL(urlstr);
     console.log(url);
     const params: URLSearchParams = new URLSearchParams(url.search);
-    const name = params.get(Keys.NameKey);
-    const category = params.get(Keys.CatKey);
-    const glass = params.get(Keys.GlassKey);
-    const prelude = params.get(Keys.PreludeKey);
-    const instructions = params.get(Keys.InstructionsKey);
-    const ingredients_raw = params.getAll(Keys.IngredientKey);
-    if ( (!name || !name.any()) || (!category || !category.any()) || (!glass || !glass.any()) || (!ingredients_raw || !ingredients_raw.any()) ) { // todo add checks against prelude and instructions?
+    const name = params.get(ParameterKeys.NameKey);
+    const category = params.get(ParameterKeys.CatKey);
+    const glass = params.get(ParameterKeys.GlassKey);
+    const prelude = params.get(ParameterKeys.PreludeKey);
+    const instructions = params.get(ParameterKeys.InstructionsKey);
+    const ingredients_raw = params.getAll(ParameterKeys.IngredientKey);
+    if ((!name || !name.any()) || (!category || !category.any()) || (!glass || !glass.any()) || (!ingredients_raw || !ingredients_raw.any())) { // todo add checks against prelude and instructions?
         console.error('failed to decode drink uri, url was invalid');
         return;
     }
@@ -398,7 +287,23 @@ function DecodeDrink(urlstr: string): IDrink {
     return drink;
 }
 
+
+const IngredientToEdit: IIngredient = {
+    DisplayOrder: 0,
+    DisplayText: undefined,
+    IngredientId: -1,
+    IngredientName: null,
+    Quantity: '1',
+    Unit: 'oz',
+    IsGarnish: false,
+};
+
 function InitBuilder() {
+    BuilderDraw(Globals.Glasses[0]);
+
+    const DTextInput = $('#DisplayTextInput');
+    const IsGarnishButton = $('#IsGarnishCheckbox');
+
     /* populate initial units */
     const UnitSelect = $('#UnitList');
     $('#UnitList').empty();
@@ -411,6 +316,18 @@ function InitBuilder() {
             return p;
         }, units);
     }
+
+    /* Register the changing unit */
+    UnitSelect.on('change', () => {
+        const unitVal: number = parseInt(UnitSelect.val() as string);
+        const u: IUnit = UnitVal2Unit(unitVal);
+        if (!u) {
+            console.error(`Tried to set ingredient unit to an invalid unit. Received: {UnitSelect.val()}`);
+            return;
+        }
+        IngredientToEdit.Unit = u.Name;
+    }
+    );
 
     /* populate initial ingredients */
     const IngredientSelect = $('#IngredientList');
@@ -427,15 +344,133 @@ function InitBuilder() {
             IngredientSelect.append(opt);
         }
     }
+
+    function QuantityChanged(x: string) {
+        const quantity = x;
+        if (quantity === 'half' || quantity === 'fill' || quantity === 'multiple') {
+            IngredientToEdit.Quantity = x;
+        } else {
+            const float = parseFloat(quantity);
+            if (isNaN(float)) {
+                console.error(`attempted to parse float for builder quantity, but failed. Supplied value was invalid: ${quantity}`);
+                return;
+            }
+            IngredientToEdit.Quantity = String(float);
+            console.log(IngredientToEdit.Quantity);
+        }
+    }
+
     IngredientSelect.on('change', () => {
         const ingVal: number = parseInt(IngredientSelect.val() as string);
+
+        /* Register Ingredient Id */
+        IngredientToEdit.IngredientId = ingVal;
+        IngredientToEdit.IngredientName = Globals.IngredientFlat[ingVal].name;
+
+        /* change the Unit pulldown to reflect available units */
         assignUnitPulldown(ingVal, UnitSelect).Name;
         const node: IIngredientNode = IngredientVal2IngredientNode(ingVal);
         if (!node) {
             console.error(`Tried to change unit select to a unit that didn't have any available SVG symbols: ${ingVal}`);
             return;
         }
+
+        /* change the active Quantity input to reflect appropriate quantities */
+        const qs_num = $('#QuantitySelect_Number');
+        const qs_mult = $('#QuantitySelect_Multiple');
+        const qs_glass = $('#QuantitySelect_Glass');
+        if (IngredientQuantityIsMultiple(ingVal)) {
+            qs_num.addClass('hidden').removeAttr('active');
+            qs_glass.addClass('hidden').removeAttr('active');
+            qs_mult.removeClass('hidden').attr('active', 'true');
+            QuantityChanged(qs_mult.val() as string);
+        } else if (IngredientQuantityIsGlass(ingVal)) {
+            qs_num.addClass('hidden').removeAttr('active');
+            qs_glass.removeClass('hidden').attr('active', 'true');
+            qs_mult.addClass('hidden').removeAttr('active');
+            QuantityChanged(qs_glass.val() as string);
+        } else {
+            qs_num.removeClass('hidden').attr('active', 'true');
+            qs_glass.addClass('hidden').removeAttr('active');
+            qs_mult.addClass('hidden').removeAttr('active');
+            QuantityChanged(qs_num.val() as string);
+        }
+
+        /* Register changing Quantity items */
+        qs_num.on('change paste keyup', (x: any) => {
+            if (qs_num.attr('active')) {
+                QuantityChanged(x.target.value);
+            }
+        });
+        qs_mult.on('change paste keyup', (x: any) => {
+            if (qs_mult.attr('active')) {
+                QuantityChanged(x.target.value);
+            }
+        });
+        qs_glass.on('change paste keyup', (x: any) => {
+            if (qs_glass.attr('active')) {
+                QuantityChanged(x.target.value);
+            }
+        });
+
+        /* make Garnish checkbox available */
+        const garnishcontainer = $('#isGarnish');
+        IsGarnishButton.removeAttr('checked');
+        if (CanBeGarnish(ingVal)) {
+            garnishcontainer.removeClass('hidden');
+            IsGarnishButton.attr('checked', 'true');
+            IngredientToEdit.IsGarnish = true; /* initial value */
+        } else {
+            garnishcontainer.addClass('hidden');
+            IngredientToEdit.IsGarnish = false; /* initial value */
+        }
+    }
+    );
+
+    /* register the changing Display Input Text */
+    DTextInput.on('change', (x: any) => {
+        const text = x.target.value as string;
+        if (!text || text.length === 0) {
+            IngredientToEdit.DisplayText = undefined;
+        } else {
+            IngredientToEdit.DisplayText = text;
+        }
     });
+
+    /* register the changing Garnish check value */
+    IsGarnishButton.removeAttr('checked');
+    IsGarnishButton.on('change', () => {
+        IngredientToEdit.IsGarnish = !IngredientToEdit.IsGarnish;
+        IngredientToEdit ? IsGarnishButton.attr('checked', 'true') : IsGarnishButton.removeAttr('checked');
+        console.log('ayy' + IngredientToEdit.IsGarnish);
+    });
+}
+
+/**
+ * Checks whether a given ingredient can be a garnish. Used for elemnt display.
+ * @param ingVal Ingredient id to check
+ */
+function CanBeGarnish(ingVal: number): boolean {
+    // TODO make this a database thing later
+    const garnishes = [193, 162, 190, 195, 233, 231, 237, 163, 156, 184, 250];
+    return (garnishes.contains(ingVal));
+}
+
+/**
+ * Checks whether a given ingredient should display the 'multiple' quantity select.
+ * @param ingVal ingredient id to check Quantity type for
+ */
+function IngredientQuantityIsMultiple(ingVal: number): boolean {
+    // TODO probably do a database thing later.
+    return (ingVal === 195 || ingVal === 196 || ingVal === 150); // berry, mint leaf, mint sprig
+}
+
+/**
+ * Checks whether a given ingredient should display the 'fill glass' quantity select.
+ * @param ingVal ingredient id to check Quantity type for
+ */
+function IngredientQuantityIsGlass(ingVal: number): boolean {
+    return (ingVal === 222 || ingVal === 243); // crushed ice, cracked ice
 }
 
 export {
