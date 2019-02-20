@@ -349,7 +349,6 @@ async function DrawCustom() {
         const drink: IDrink = DecodeDrink(window.location.toString());
         console.log(drink);
         const sdo: ISelectedDrink = {
-            Builder: false,
             Drink: drink,
             Optionals: [],
             Substitutions: {},

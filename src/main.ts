@@ -15,7 +15,7 @@ import { SearchObject } from './models/SearchObject';
 import { SelectedDrinkObject } from './models/SelectedDrinkObject';
 import { DownloadMainJson } from './services/DownloadService';
 import { StorageGetPantryItems } from './services/StorageService';
-import { setCategoryType, setDrinkName, setGlassType, BuilderDraw, addIngredient, CreateDrink, DecodeDrink, setInstructions, setPrelude, InitBuilder } from './services/BuilderService';
+import { setCategoryType, setDrinkName, setGlassType, BuilderDraw, addIngredient, CreateDrink, DecodeDrink, setInstructions, setPrelude, InitBuilder, CancelIngredientAdd, RevealIngredientAdd } from './services/BuilderService';
 import { IData } from './models/Data';
 
 // -- Global Variables --\\
@@ -128,7 +128,7 @@ async function main(json: IData) {
         populateIngredientTree(Globals.ingredients, SearchObject);
     } else if (thispage === 'builder') {
         InitBuilder();
-        await BuilderDraw(Globals.Glasses[0], Globals.Categories[0].name);
+        await BuilderDraw();
     } else if (thispage === 'custom') {
         await DrawCustom();
     }
@@ -164,5 +164,6 @@ export {
     setInstructions,
     addIngredient,
     CreateDrink,
-
+    CancelIngredientAdd,
+    RevealIngredientAdd,
 };

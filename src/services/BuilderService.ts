@@ -4,27 +4,26 @@ import { Globals } from './Globals';
 import { IIngredient, IIngredientNode } from '../models/IIngredient';
 import { DFS, ITree, NoSiblings } from '../models/ITree';
 import { IDisplayUnit, IUnit } from '../models/IUnit';
-import { UnitVal2Unit } from './UnitService';
+import { UnitVal2Unit, UnitString2Unit } from './UnitService';
 import { IngredientVal2IngredientNode, EncodeIngredientForUrl, DecodeIngredientFromUrl } from './IngredientService';
 import { DisplayDrink } from './DrinkDisplayService';
 import { ISelectedDrink } from '../models/SelectedDrinkObject';
-import { Category } from '../models/Category';
 import { QRDataLimit_AlphaNumeric } from './QRCodeService';
 
-interface IAddedIngredient {
-    id: number;
-    ingredient: IIngredient;
+interface IAddedIngredient extends IIngredient {
+    addedId: number;
 }
 
 let qrCodeAllotment = 0;
 const units: Array<string> = [];
 const AddedIngredients: Array<IAddedIngredient> = [];
-let timesAdded = -1;
+let timesAdded: number = -1;
+let isEditing: boolean = false;
 
 const DrinkToDraw: IDrink = {
-    Category: undefined,
+    Category: 'old fashioned',
     DrinkId: -1,
-    Glass: undefined,
+    Glass: 'coupe',
     Ingredients: [],
     Name: '',
     Prelude: '',
@@ -66,42 +65,93 @@ function setInstructions(val: string) {
     console.log(val);
 }
 
+function setEditState(state: boolean) {
+    isEditing = state;
+    if (state) {
+        $('#confirmAddIngredient').text('confirm edit');
+    } else {
+        $('#confirmAddIngredient').text('add');
+    }
+}
+
 async function pushIngredient(globalId: number, ingredient: IIngredient) {
     const ai: IAddedIngredient = {
-        id: globalId,
-        ingredient: ingredient,
+        ...ingredient,
+        addedId: globalId,
     };
-    AddedIngredients.push(ai);
-    DrinkToDraw.Ingredients.clear();
-    AddedIngredients.forEach(x => DrinkToDraw.Ingredients.push(x.ingredient));
+    if (isEditing) {
+        const idx = AddedIngredients.findIndex(x => x.addedId === globalId);
+        AddedIngredients[idx] = ai;
+        DrinkToDraw.Ingredients[idx] = ai;
+    }
+    else {
+        AddedIngredients.push(ai);
+        DrinkToDraw.Ingredients.clear();
+        AddedIngredients.forEach(x => DrinkToDraw.Ingredients.push(x));
+    }
     BuilderDraw();
 }
 
 async function removeIngredient(gloabalId: number): Promise<void> {
-    const remove = AddedIngredients.filter(x => x.id === gloabalId);
+    const remove = AddedIngredients.filter(x => x.addedId === gloabalId);
     remove.forEach(x => AddedIngredients.remove(x));
     DrinkToDraw.Ingredients.clear();
-    AddedIngredients.forEach(x => DrinkToDraw.Ingredients.push(x.ingredient));
+    AddedIngredients.forEach(x => DrinkToDraw.Ingredients.push(x));
+}
+
+function openEdit(ingredient: IAddedIngredient) {
+
+    /* Set the Editing flag */
+    setEditState(true);
+
+    /* Set the Selected Ingredient */
+    const inglist = $('#IngredientList').val(ingredient.IngredientId).change(); /* change() is a trick to force the select to acknowledge the new value */
+
+
+    /* Set the unit */
+    const unit: IUnit = UnitString2Unit(ingredient.Unit);
+    const unitList = $('#UnitList').val(unit.Id).change();
+
+    /* Set the Quantity */
+    $('[active=\'true\']').val(ingredient.Quantity).change();
+
+    /* Set Display Text */
+    const dtext = $('#DisplayTextInput').val(ingredient.DisplayText).change();
+
+    /* Set Garnish Check */
+    // todo not working
+    if (ingredient.IsGarnish) {
+        $('#IsGarnishCheckbox').attr('checked', 'true').change();
+    } else {
+        $('#IsGarnishCheckbox').removeAttr('checked').change();
+    }
+
+    /* open the menu */
+    RevealIngredientAdd();
+
 }
 
 /* also functions as an init function when passed parameters */
-async function BuilderDraw(glass?: string, category?: string) {
+async function BuilderDraw() {
 
     updateQRCodeAllotment('', '');
 
-    if (glass) {
-        DrinkToDraw.Glass = glass;
-    }
-    if (category) {
-        DrinkToDraw.Category = category;
-    }
     ResetSVGSpace();
 
     const sdo: ISelectedDrink = {
         Drink: DrinkToDraw,
         Optionals: [],
         Substitutions: {},
-        Builder: true
+        Builder: {
+            OnDelete: async (ingredient: IIngredient) => {
+                const iadded = ingredient as IAddedIngredient;
+                removeIngredient(iadded.addedId);
+                await BuilderDraw();
+            },
+            OnEdit: (ingredient: IIngredient) => {
+                openEdit(ingredient as IAddedIngredient);
+            }
+        }
     };
     DisplayDrink(sdo);
 }
@@ -147,12 +197,17 @@ function assignUnitPulldown(ingredientId: number, pulldown: JQuery<HTMLElement>)
 }
 
 async function addIngredient(): Promise<void> {
-    timesAdded += 1;
+    if (!isEditing) {
+        timesAdded += 1;
+    }
     $('#IngredientEntry').removeClass('entry_grid').addClass('hidden');
     console.log(IngredientToEdit);
     const iing: IIngredient = JSON.parse(JSON.stringify(IngredientToEdit));
     await pushIngredient(timesAdded, iing);
     DoErrors([ErrorChecks.IngredientCount]);
+
+    /* regardless of editing state before, we turn it off here */
+    setEditState(false);
 }
 
 const ParameterKeys = {
@@ -321,8 +376,8 @@ const IngredientToEdit: IIngredient = {
     IsGarnish: false,
 };
 
-function InitBuilder() {
-    BuilderDraw(Globals.Glasses[0]);
+async function InitBuilder() {
+    await BuilderDraw();
 
     const DTextInput = $('#DisplayTextInput');
     const IsGarnishButton = $('#IsGarnishCheckbox');
@@ -497,6 +552,17 @@ function IngredientQuantityIsGlass(ingVal: number): boolean {
     return (ingVal === 222 || ingVal === 243); // crushed ice, cracked ice
 }
 
+function CancelIngredientAdd() {
+    $('#IngredientEntry').removeClass('entry_grid').addClass('hidden');
+
+    /* regardless of what was happening before, we mark isEditing as false here */
+    setEditState(false);
+}
+
+function RevealIngredientAdd() {
+    $('#IngredientEntry').removeClass('hidden').addClass('entry_grid');
+}
+
 export {
     InitBuilder,
     setDrinkName,
@@ -509,4 +575,6 @@ export {
     addIngredient,
     CreateDrink,
     DecodeDrink,
+    CancelIngredientAdd,
+    RevealIngredientAdd,
 };

@@ -125,7 +125,7 @@
 
             <span>
                 <button id="addIngredientButton" class="btn btn-sm btn-primary" style="margin-left: 10px;"
-                    onclick="$('#IngredientEntry').removeClass('hidden').addClass('entry_grid')">+ Add
+                    onclick="nondari.RevealIngredientAdd()">+ Add
                     Ingredient</button>
                 <div id="IngredientEntry" class="IngredientEntry text hidden">
                     <label for="IngredientList">Ingredient</label>
@@ -177,10 +177,10 @@
                     <input id="DisplayTextInput" type="text" placeholder="Optional">
 
                     <span>
-                        <button class="btn btn-success btn-sm"
+                        <button id='confirmAddIngredient' class="btn btn-success btn-sm"
                             onclick="nondari.addIngredient()">Add</button>
                         <button class="btn btn-danger btn-sm"
-                            onclick="$('#IngredientEntry').removeClass('entry_grid').addClass('hidden')">Cancel</button>
+                            onclick="nondari.CancelIngredientAdd()">Cancel</button>
                     </span>
                 </div>
 
@@ -189,7 +189,6 @@
 
             <div class="grid" style="margin-right: 25%">
                 <span>
-                    <ul id="drinkIngredientsEdit"></ul>
                     <ul id="drinkIngredients"></ul>
                 </span>
                 <div id="svg_placement" class="drawing">

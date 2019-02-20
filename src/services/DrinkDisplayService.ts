@@ -113,11 +113,16 @@ function ingredientText(ingredient: IIngredient, additionalText: string, sdo?: I
     sp.append(ingredientLink(ingredient));
     sp.append(additionalText);
     if (sdo && sdo.Builder) {
-        const but = $('<button>').text('X').addClass(['btn', 'btn-xs', 'btn-danger']);
-        but.on('click', () => {
-            console.log('shrug emoji');
+        const del = $('<button>').text('X').addClass(['btn', 'btn-xs', 'btn-danger']);
+        const edit = $('<button>').text('✎').addClass(['btn', 'btn-xs', 'btn-primary']);
+        del.on('click', () => {
+            sdo.Builder.OnDelete(ingredient);
         });
-        sp.append(but);
+        edit.on('click', () => {
+            sdo.Builder.OnEdit(ingredient);
+        });
+        sp.append(del);
+        sp.append(edit);
     }
 
     if (ingredient.DisplayOrder > -1) {
