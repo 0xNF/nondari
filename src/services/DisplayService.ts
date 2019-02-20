@@ -1,4 +1,4 @@
-// import '../js/qrcode.min.js';
+import '../js/qrcode.min.js';
 import { Category } from '../models/Category';
 import { IDrink } from '../models/IDrink';
 import { makeCategoryId } from './CategoryService';
@@ -363,14 +363,14 @@ async function DrawCustom() {
 
 function DisplayQR(qrdata: string) {
     console.log(qrdata);
-    // const qrcode = new QRCode(document.getElementById('qrcode'), {
-    //     text: qrdata,
-    //     width: 128,
-    //     height: 128,
-    //     colorDark : '#000000',
-    //     colorLight : '#ffffff',
-    //     correctLevel : QRCode.CorrectLevel.L
-    // });
+    const qrcode = new QRCode(document.getElementById('qrcode'), {
+        text: qrdata,
+        width: 128,
+        height: 128,
+        colorDark : '#000000',
+        colorLight : '#ffffff',
+        correctLevel : QRCode.CorrectLevel.L
+    });
 }
 
 export {

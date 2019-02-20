@@ -20,6 +20,7 @@ module.exports = {
             { from: 'css/', to: 'css/' },
             { from: 'img/', to: 'img/' },
             { from: 'json/', to: 'json/'},
+            { from: 'js/', to: 'js/'},
           ]),
         new HtmlWebpackPlugin({
             filename: 'index.html',
