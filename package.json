@@ -4,9 +4,9 @@
   "description": "A way to view cocktails and search an ingredient tree",
   "main": "index.js",
   "scripts": {
-    "start": "python ./MakeClientJson.py && webpack-dev-server --port 9000 --inline --progress --profile --colors --watch --content-base src/ --mode development",
-    "build": "python ./MakeClientJson.py && webpack --config webpack.config.js --mode production",
-    "build.prod": "python ./MakeClientJson.py && webpack --config webpack.config.js -p",
+    "start": "python3 ./MakeClientJson.py && webpack-dev-server --port 9000 --inline --progress --profile --colors --watch --content-base src/ --mode development",
+    "build": "python3 ./MakeClientJson.py && webpack --config webpack.config.js --mode production",
+    "build.prod": "python3 ./MakeClientJson.py && webpack --config webpack.config.js -p",
     "test": "karma start karma.config.js"
   },
   "keywords": [
