@@ -29,7 +29,7 @@ const OldFashionedGlass: IGlass = {
     Name: 'old fashioned',
     MaskURL: '/img/glasses/rocks2_mask.svg',
     SVGURL: '/img/glasses/rocks2.svg',
-    AvailableRows: 22,
+    AvailableRows: 4,
     Height: 226,
     Width: 247,
 };
@@ -56,7 +56,7 @@ const WhiskeyGlass: IGlass = {
     Name: 'whiskey',
     MaskURL: '/img/glasses/whiskey_mask.svg',
     SVGURL: '/img/glasses/whiskey.svg',
-    AvailableRows: 22,
+    AvailableRows: 21,
     Height: 226,
     Width: 247,
 };
