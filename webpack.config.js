@@ -19,6 +19,7 @@ module.exports = {
         new CopyPlugin([
             { from: 'css/', to: 'css/' },
             { from: 'img/', to: 'img/' },
+            { from: 'json/', to: 'json/'},
           ]),
         new HtmlWebpackPlugin({
             filename: 'index.html',
