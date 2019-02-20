@@ -20,6 +20,7 @@ const units: Array<string> = [];
 const AddedIngredients: Array<IAddedIngredient> = [];
 let timesAdded: number = -1;
 let isEditing: boolean = false;
+const QRURLVersion = 'v1'; /* We update this when we change the formatting of the qr url, so we can show an error for an invalid url*/
 
 const DrinkToDraw: IDrink = {
     Category: 'old fashioned',
@@ -212,6 +213,7 @@ async function addIngredient(): Promise<void> {
 }
 
 const ParameterKeys = {
+    VersionKey: 'ver',
     NameKey: 'name',
     CatKey: 'category',
     GlassKey: 'glass',
@@ -308,6 +310,7 @@ function CreateDrink() {
     }
 
     const params: URLSearchParams = new URLSearchParams();
+    params.set(ParameterKeys.VersionKey, String(QRURLVersion));
     params.set(ParameterKeys.NameKey, DrinkToDraw.Name);
     params.set(ParameterKeys.CatKey, DrinkToDraw.Category);
     params.set(ParameterKeys.GlassKey, DrinkToDraw.Glass);
@@ -333,6 +336,11 @@ function DecodeDrink(urlstr: string): IDrink {
     const url = new URL(urlstr);
     console.log(url);
     const params: URLSearchParams = new URLSearchParams(url.search);
+    const ver = params.get(ParameterKeys.VersionKey);
+    if (ver !== QRURLVersion) {
+        console.error('user used an old QR link we no longer support. Show error');
+        return;
+    }
     const name = params.get(ParameterKeys.NameKey);
     const category = params.get(ParameterKeys.CatKey);
     const glass = params.get(ParameterKeys.GlassKey);
