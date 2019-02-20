@@ -3,6 +3,8 @@ webpackConfig.mode = 'production';
 
 module.exports = function(config) {
   config.set({
+    browserNoActivityTimeout: 50000,
+    browserDisconnectTolerance: 2,
     singleRun: true,
     
     browsers: [

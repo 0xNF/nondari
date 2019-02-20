@@ -25,7 +25,6 @@
         "label-position": true,
         "no-boolean-literal-compare": true,
         "use-isnan": true,
-        "typeof-compare":true,
         "trailing-comma":false,
         "switch-default":true,
         "restrict-plus-operands":true,
