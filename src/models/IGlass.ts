@@ -29,7 +29,7 @@ const OldFashionedGlass: IGlass = {
     Name: 'old fashioned',
     MaskURL: '/img/glasses/rocks2_mask.svg',
     SVGURL: '/img/glasses/rocks2.svg',
-    AvailableRows: 4,
+    AvailableRows: 23,
     Height: 226,
     Width: 247,
 };

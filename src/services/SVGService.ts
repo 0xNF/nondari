@@ -186,8 +186,6 @@ const smap: {[key: string]: string} = {
 };
 
 
-
-
 /**
  * Returns the number of rows each ingredient should take up given the drink's glass.
  * @param drink the drink containing the list of ingredients and their quantites to use
