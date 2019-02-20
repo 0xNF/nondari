@@ -9,6 +9,7 @@ import { IngredientVal2IngredientNode, EncodeIngredientForUrl, DecodeIngredientF
 import { DisplayDrink } from './DrinkDisplayService';
 import { ISelectedDrink } from '../models/SelectedDrinkObject';
 import { QRDataLimit_AlphaNumeric } from './QRCodeService';
+import { Category } from '../models/Category';
 
 interface IAddedIngredient extends IIngredient {
     addedId: number;
@@ -354,9 +355,11 @@ function DecodeDrink(urlstr: string): IDrink {
         ingredients.push(ing);
     }
 
+    const cat: Category = Globals.Categories.find(x => x.id === category);
+
     const drink: IDrink = {
         DrinkId: -1,
-        Category: category,
+        Category: cat.name,
         Glass: glass,
         Instructions: instructions,
         Prelude: prelude,

@@ -362,7 +362,6 @@ async function DrawCustom() {
 }
 
 function DisplayQR(qrdata: string) {
-    console.log(qrdata);
     const qrcode = new QRCode(document.getElementById('qrcode'), {
         text: qrdata,
         width: 128,
