@@ -1,29 +1,44 @@
-Webpack 4 + TypeScript starter
+Nondari
 ------------------------------
 
-[![Build Status](https://travis-ci.org/juristr/webpack-typescript-starter.svg?branch=master)](https://travis-ci.org/juristr/webpack-typescript-starter)
+Git repo for https://nondari.netlify.com
 
-This is by far no sophisticated starter or whatever. The goal is to get the simplest possible setup to get you started with Webpack 4 and TypeScript. You can then start from here and add further stuff you need, such as SASS compilation, add framework specific stuff etc.
+Based on the [Webpack 4 + TypeScript Starter](https://github.com/juristr/webpack-typescript-starter) by [Juristr](https://github.com/juristr).
 
-Also check out the official Webpack 4 docs for a proper TypeScript setup: https://webpack.js.org/guides/typescript/
+Nondari is primarily a digitization of the book Regarding Cocktails. The aim was to replicate the gorgeous drawings each cocktail had. 
 
-_Note, this is still a WIP. Contributions/suggestions are welcome :smiley:_
+Nondari is capable of dynamically rendering an arbitrary cocktail in a variety of glasses with a number of different garnishes.
 
-## Features
+## Database Source
+All the drink and ingredient information is stored in sqlite file `nondari.db`. Before each `npm run build` or `npm run start`, the `MakeClientJson.py` script launches, which extracts the necessary data from the database into the static `drinks.json` file. If you want to add ingredients or change a drink, you'll need to make the changes in the sqlite file.
 
-- [x] Webpack 4
-- [x] TypeScript 2 compilation
-- [x] ts-lint
-- [x] Webpack Development Server
-- [x] Karma and Jasmine test execution
+## Database Structure
+
+## Structure
+The application is split into `/models/` and `/services/`, where services are things that operate on models and manipulate the dom.
+
+## SVG drawing
+All SVG draws occur in `SVGService.ts`.
+
+## SVG files
+You'll find all svgs under `/src/img/`.
+
+These files were made with [Inkscape](https://inkscape.org/).
+
+### Glasses
+Each glass drawing is split into two files a `glass.svg` and a `mask.svg`, where the masksvg details the area that will be filled in with ingredient drawings. If any changes are made to the size or area of a glass, be sure to create a new masking SVG file as well.
+
+### Ingredients
+Ingredients are usually 10-by-10 px files detailing a single instance of an ingredient drawing. There are no rows.
+
+Some ingredients like ice or garnishes may be larger, but they have separate drawing rules in the SVGService to account for that.
 
 ## How to use
 
 Just clone it and get going.
 
 ```
-# --depth 1 removes all but one .git commit history
-$ git clone --depth=1 https://github.com/juristr/webpack-typescript-starter.git <your-project-name>
+$ git clone https://github.com/0xnf/nondari.git <your-project-name>
 
 # change directory to your project
 cd  <your-project-name>
@@ -45,13 +60,3 @@ npm run build.prod
 # run unit tests:
 npm run test
 ```
-## Contributions
-
-Of course! Open an issue and let's discuss :smiley:.
-
-## Links and other useful stuff
-
-Similar projects that could be a point of inspiration:
-
-- [krasimir/webpack-library-starter](https://github.com/krasimir/webpack-library-starter)
-

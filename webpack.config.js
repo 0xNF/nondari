@@ -24,11 +24,11 @@ module.exports = {
           ]),
         new HtmlWebpackPlugin({
             filename: 'index.html',
-            template: 'html/pages/index.html'
+            template: 'html/pages/index.html',
           }),
           new HtmlWebpackPlugin({
             filename: 'builder.html',
-            template: 'html/pages/builder.html'
+            template: 'html/pages/builder.html',
           }),
           new HtmlWebpackPlugin({
             filename: 'about.html',
