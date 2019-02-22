@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # make necessary dirs first
-mkdir src/img/ingredients/
-mkdir src/img/glasses/
+mkdir -p src/img/ingredients/
+mkdir -p src/img/glasses/
 
 # copy the raw SVGs
 cp RawSVGs/glasses/* src/img/glasses/
