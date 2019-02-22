@@ -77,7 +77,8 @@
     </div>
 
     <div class="main mainpush">
-    {{ PAGE_GO_HERE}}
+        <%= require('html-loader!<%= htmlWebpackPlugin.options.meat %>') %>
+        <%=template.replace('${someVar}', someVar)%>
     </div>
 
     <footer class="footer">
