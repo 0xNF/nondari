@@ -4,7 +4,7 @@
 <head>
     <title>Drink Builder - Nondari</title>
     <meta charset="utf-8">
-<link href="/img/favicon.png" rel="shortcut icon" />
+    <link href="/img/favicon.png" rel="shortcut icon" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -23,8 +23,8 @@
 
 <body>
     <nav class="navpush navbar navbar-expand-lg navbar-dark bg-dark">
-                <a class="navbar-brand" href="/index.html">
-            <img src="/img/favicon.png" style="margin-right: 5px"></img>
+        <a class="navbar-brand" href="/index.html">
+            <img src="/img/favicon2.png" height="25" width="25" style="margin-right: 5px"></img>
             Nondari
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
@@ -98,13 +98,14 @@
             <button class='btn btn-xs btn-primary' onclick="nondari.CreateDrink()">Create Drink</button><br />
 
             <div class="entry_grid text">
-                <span  id='errorContainer' class='ErrorText hidden'>
+                <span id='errorContainer' class='ErrorText hidden'>
                     <ul id="errorList">
 
                     </ul>
                 </span>
                 <label class="entry_grid_left" for="inputName">Name of Drink:</label>
-                <input class="entry_grid_right" id="inputName" type="text" onchange="nondari.setDrinkName(this.value)" placeholder="Name your drink">
+                <input class="entry_grid_right" id="inputName" type="text" onchange="nondari.setDrinkName(this.value)"
+                    placeholder="Name your drink">
                 <br class="spanner" />
                 <label class="entry_grid_left" for="selectCategory">Category:</label>
                 <select class="entry_grid_right" id="selectCategory"
@@ -115,7 +116,8 @@
                 <br class="spanner" />
                 <label class="entry_grid_left" for="area_prelude">Prelude:</label>
                 <textarea class="entry_grid_right entry_textarea" id="area_prelude" maxlength="500"
-                    onchange="nondari.setPrelude(this.value)" placeholder="Have anything interesting to say about this drink?"></textarea>
+                    onchange="nondari.setPrelude(this.value)"
+                    placeholder="Have anything interesting to say about this drink?"></textarea>
                 <br class="spanner" />
                 <label class="entry_grid_left" for="area_instructions">Instructions:</label>
                 <textarea class="entry_grid_right entry_textarea" id="area_instructions" maxlength="500"
@@ -179,8 +181,7 @@
                     <span>
                         <button id='confirmAddIngredient' class="btn btn-success btn-sm"
                             onclick="nondari.addIngredient()">Add</button>
-                        <button class="btn btn-danger btn-sm"
-                            onclick="nondari.CancelIngredientAdd()">Cancel</button>
+                        <button class="btn btn-danger btn-sm" onclick="nondari.CancelIngredientAdd()">Cancel</button>
                     </span>
                 </div>
 
@@ -208,7 +209,7 @@
         </span>
     </footer>
 
-    
+
 </body>
 
 </html>
