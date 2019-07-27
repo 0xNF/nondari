@@ -16,9 +16,10 @@ import { DrawIngredientSVG } from './SVGService';
 import { StorageAddPantryItem, StorageClearPantry, StorageRemovePantryItem } from './StorageService';
 import { DecodeDrink } from './BuilderService';
 import { ISelectedDrink } from '../models/SelectedDrinkObject';
-import { DisplayDrink } from './DrinkDisplayService';
+import { DisplayDrink, ingredientText } from './DrinkDisplayService';
 import { QRDataLimit_AlphaNumeric } from './QRCodeService';
 import { Glasses } from '../models/IGlass';
+import { IRecipe } from '../models/IRecipe.js';
 
 
 /* Sidebar drawing */
@@ -95,6 +96,26 @@ function populateDrinksWithThisIngredient(drinks: Array<IDrink>): void {
     }
 }
 
+function displayRecipe(recipe?: IRecipe) {
+    $('#drinkIngredients').empty();
+    if (!recipe) {
+        $('#recipeArea').addClass('hidden');
+        $('#recipeInstructions').empty();
+    } else {
+        $('#recipeArea').removeClass('hidden');
+        $('#recipeInstructions').text(recipe.Instructions);
+
+        recipe.Ingredients.forEach((x) => {
+            const sp: JQuery<HTMLElement> = $('<span>');
+            const li: JQuery<HTMLElement> = $('<li>').addClass('text');
+            const ul: JQuery<HTMLElement> = li.append(sp);
+            const t: JQuery<HTMLElement> = ingredientText(x, ""); // TODO typescript being a bitch
+            sp.html(t as any);
+            $('#drinkIngredients').append(ul);
+        });
+    }
+}
+
 function displayIngredient(ingredient: IIngredientNode, ingredientUniverse: Array<IIngredientNode>, ingredientUniverseFlat: KVP<IIngredientNode>, drinkUniverse: Array<IDrink>): void {
     $('#ingredientHeader').text(ingredient.name);
 
@@ -162,7 +183,7 @@ function removeFromYourPantry(ing: IIngredientNode): boolean {
 function redrawPantry(): void {
     clearPantry();
     SearchObject.Inventory.forEach((x: IIngredientNode) => {
-        const button: JQuery<HTMLElement> = $('<button>').addClass('pantrytext').addClass('pantrybutton').attr('id', 'pantrybutton_' + x.id).addClass('btn').addClass('btn-xs').text('x').on('click', function(): void {
+        const button: JQuery<HTMLElement> = $('<button>').addClass('pantrytext').addClass('pantrybutton').attr('id', 'pantrybutton_' + x.id).addClass('btn').addClass('btn-xs').text('x').on('click', function (): void {
             removeFromYourPantry(x);
             redrawPantry();
         });
@@ -233,7 +254,7 @@ function populateIngredientTree(branches: Array<IIngredientNode>, SearchObject: 
             appender.addClass('collapse');
         }
         if (node.children.length > 0) {
-            const expander = $('<button>').addClass('btn').addClass('btn-md').text(depth >= (options.CollapseDepth) - 1 ? Settings.symbols.upsymbol : Settings.symbols.downsymbol).on('click', function() {
+            const expander = $('<button>').addClass('btn').addClass('btn-md').text(depth >= (options.CollapseDepth) - 1 ? Settings.symbols.upsymbol : Settings.symbols.downsymbol).on('click', function () {
                 if (expander.text() === Settings.symbols.upsymbol) {
                     expander.text(Settings.symbols.downsymbol);
                     appender.removeClass('collapse');
@@ -269,12 +290,14 @@ function populateIngredientTree(branches: Array<IIngredientNode>, SearchObject: 
 }
 
 function DrawIngredient(): void {
-    const an: number =  parseInt(location.hash.substring(1));
+    const an: number = parseInt(location.hash.substring(1));
     if (isNaN(an)) {
         console.error('failed to parse hash fragment ingredient id for value: ' + location.hash.substring(1));
         return;
     }
     const ingredient: IIngredientNode = Globals.IngredientFlat[an];
+    const recipe = Globals.Recipes.find(x => x.IngredientId === an);
+    displayRecipe(recipe);
     displayIngredient(ingredient, Globals.ingredients, Globals.IngredientFlat, Globals.Drinks);
     window.document.title = ingredient.name + ' - Nondari';
 }
@@ -295,7 +318,7 @@ function showYourDrinks(drinksResults: IDrinkSearchResults): void {
             const a: JQuery<HTMLElement> = $('<a>').attr('href', encodeDrink(x)).text(`${x.name} [${texts}]`); // x.name);
             li.append(a);
             listObject.append(li);
-         });
+        });
     }
 
     $('#your_drinks').removeClass('collapse');
@@ -366,9 +389,9 @@ function DisplayQR(qrdata: string) {
         text: qrdata,
         width: 128,
         height: 128,
-        colorDark : '#000000',
-        colorLight : '#ffffff',
-        correctLevel : QRCode.CorrectLevel.L
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.L
     });
 }
 

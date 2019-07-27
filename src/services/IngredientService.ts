@@ -41,16 +41,17 @@ function makeIngredientIdForHTML(ingredient: IIngredient): string {
 
 
 const UnitAndPlurals: ReadonlyArray<IUnitPlural> = [
-    {unit: 'oz', plural: 'oz'},
-    {unit: 'bs', plural: 'bs'},
-    {unit: 'ts', plural: 'ts'},
-    {unit: 'tbs', plural: 'tbs'},
-    {unit: 'shot', plural: 'shots'},
-    {unit: 'dash', plural: 'dashes'},
-    {unit: 'pinch', plural: 'pinches'},
-    {unit: 'drop', plural: 'drops'},
-    {unit: 'leaf', plural: 'leaves'},
-    {unit: 'stick', plural: 'sticks'},
+    { unit: 'oz', plural: 'oz' },
+    { unit: 'bs', plural: 'bs' },
+    { unit: 'ts', plural: 'ts' },
+    { unit: 'tbs', plural: 'tbs' },
+    { unit: 'cup', plural: 'cups' },
+    { unit: 'shot', plural: 'shots' },
+    { unit: 'dash', plural: 'dashes' },
+    { unit: 'pinch', plural: 'pinches' },
+    { unit: 'drop', plural: 'drops' },
+    { unit: 'leaf', plural: 'leaves' },
+    { unit: 'stick', plural: 'sticks' },
 ];
 
 /**
@@ -77,7 +78,7 @@ function IngredientVal2IngredientNode(val: number): IIngredientNode {
 }
 
 function EncodeIngredientForUrl(ingredient: IIngredient): string {
-   return `${ingredient.IngredientId}_${ingredient.Quantity}_${ingredient.Unit}_${ingredient.IsGarnish}_${ingredient.DisplayOrder}_${ingredient.DisplayText ? ingredient.DisplayText : ''}`;
+    return `${ingredient.IngredientId}_${ingredient.Quantity}_${ingredient.Unit}_${ingredient.IsGarnish}_${ingredient.DisplayOrder}_${ingredient.DisplayText ? ingredient.DisplayText : ''}`;
 }
 
 function DecodeIngredientFromUrl(fragment: string): IIngredient {
@@ -172,7 +173,7 @@ function GetRecommendedIngredients(results: IDrinkSearchResults) {
             const ing = missing[k];
             if (!missingIds.contains(ing.IngredientId)) {
                 missingIds.push(ing.IngredientId);
-                missingIngredients.push({count: 1, id: ing.IngredientId, ingredient: Ingredient2IngredientNode(ing) });
+                missingIngredients.push({ count: 1, id: ing.IngredientId, ingredient: Ingredient2IngredientNode(ing) });
             } else {
                 const misser = missingIngredients.find(x => x.id === ing.IngredientId);
                 misser.count += 1;
@@ -196,7 +197,7 @@ function GetRecommendedIngredients(results: IDrinkSearchResults) {
             if (consideredIds.contains(invsWithWilling[k].id)) {
                 continue;
             }
-            const otherInv = {...invsWithWilling[k], missing: invsWithWilling[k].missing.map(x => x.IngredientId)};
+            const otherInv = { ...invsWithWilling[k], missing: invsWithWilling[k].missing.map(x => x.IngredientId) };
             for (let z = 0; z < ings.length; z++) {
                 const pop = ings[z];
                 otherInv.missing.remove(pop);

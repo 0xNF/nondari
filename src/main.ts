@@ -17,6 +17,7 @@ import { DownloadMainJson } from './services/DownloadService';
 import { StorageGetPantryItems } from './services/StorageService';
 import { setCategoryType, setDrinkName, setGlassType, BuilderDraw, addIngredient, CreateDrink, DecodeDrink, setInstructions, setPrelude, InitBuilder, CancelIngredientAdd, RevealIngredientAdd } from './services/BuilderService';
 import { IData } from './models/Data';
+import { constructRecipes } from './services/RecipeService';
 
 // -- Global Variables --\\
 const NavObj: INavObject = {
@@ -77,7 +78,6 @@ function calculateDrinks() {
 
 function RestorePantryItems() {
     const iarr: Array<IIngredientNode> = StorageGetPantryItems();
-    // SearchObject._InventoryIds = iarr.map(x => x.id);
     iarr.forEach((x) => {
         SearchObject._InventoryIds.push(x.id);
         SearchObject.Inventory.push(x);
@@ -102,6 +102,9 @@ async function main(json: IData) {
 
     // Unique, in-order Drinks
     constructDrinks(json.drinks).forEach(x => Globals.Drinks.push(x));
+
+    // Unique, in-order Recipes
+    constructRecipes(json.recipes).forEach(x => Globals.Recipes.push(x));
 
     // Unit Categories
     json.unitTypes.forEach(x => Globals.UnitTypes.push(x));

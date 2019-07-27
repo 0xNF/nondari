@@ -596,6 +596,7 @@ async function DrawDrinkSVG(drink: IDrink, universe: Array<IIngredientNode>) {
 }
 
 async function DrawIngredientSVG(ingredient: IIngredientNode, universe: Array<IIngredientNode>) {
+    $('#svgholder').empty();
     const svgu: string = getIngredientNodeSVGStyle(ingredient, universe);
     if (svgu === null) {
         console.error('Whoaaaah something happened while trying to draw an SVG');

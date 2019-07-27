@@ -80,7 +80,7 @@ function ingredientText(ingredient: IIngredient, additionalText: string, sdo?: I
         if (blanks.contains(u)) {
             return '';
         }
-        const us: Array<string> = ['oz', 'bs', 'ts', 'tbs', 'shot'];
+        const us: Array<string> = ['oz', 'bs', 'ts', 'tbs', 'shot', 'cup'];
         const quants: Array<string> = ingredient.Quantity.split('-');
         for (let i = 0; i < quants.length; i++) {
             const tp: number = parseFloat(quants[i]);
@@ -255,4 +255,5 @@ function DisplayDrink(SDO: ISelectedDrink): void {
 export {
     DrawDrink,
     DisplayDrink,
+    ingredientText,
 };
