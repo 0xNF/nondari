@@ -34,6 +34,40 @@ def GetDrinks():
 
     return list(drinks.values())
 
+def GetRecipes():
+    conn = sqlite3.connect(db)
+    rs = {}
+    q = "SELECT \
+	R.Id, R.IngredientId, R.Name, R.Instructions, R.ShelfLife, \
+	RIM.Quantity, RIM.Unit, \
+	CT.Id, CT.Name \
+	FROM \
+		Recipes AS R \
+	JOIN \
+		RecipeIngredientMap AS RIM \
+			ON RIM.RecipeId == R.Id \
+	JOIN \
+		CategoryTree AS CT \
+			ON CT.Id == RIM.IngredientId \
+	ORDER BY R.Id ASC"
+    for rec in conn.execute(q):
+        # Recipe Meta
+        recipeId = rec[0]
+        if recipeId not in rs:
+            recipe = {"IngredientId": rec[1], "Name": rec[2], "Instructions": rec[3], "ShelfLife": rec[4], "RecipeId": recipeId, "Ingredients": []}
+            rs[recipeId] = recipe
+
+        #Ingredient Meta
+        quantity = rec[5]
+        unit = rec[6]
+        ingId = rec[7]
+        ingame = rec[8]
+        ing = {"IngredientId": ingId, "Quantity": quantity, "Unit": unit, "IngredientName": ingame}
+        rs[recipeId]["Ingredients"].append(ing)
+
+    return list(rs.values())
+
+
 def GetIngredientTree():
     conn = sqlite3.connect(db)
     c = conn.cursor()
@@ -103,11 +137,13 @@ def main():
     drinks = GetDrinks()
     ingTree = GetIngredientTree()
     units = GetUnits()
+    recipes = GetRecipes()
 
     j = {
         "drinks": drinks,
+        "recipes": recipes,
         "ingredientTree": ingTree,
-        "unitTypes": units
+        "unitTypes": units,
     }
     
     writeJson(j, os.path.join("./src/json/drinks.json"))
