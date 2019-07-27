@@ -38,20 +38,20 @@ interface IIngredientRatio {
     rowcount: number;
 }
 
-const SVGOptions: ISVGOptions  = {
+const SVGOptions: ISVGOptions = {
     WidthCanvas: 250,
     HeightCanvas: 80 * 4,
     WidthElement: 10,
     HeightElement: 10,
     ScaleElement: 1,
-    DropletMeta: {Height: 25, Width: 25},
-    LiquidMeta: {Height: 10, Width: 10},
-    TwistMeta: {Height: 50, Width: 100},
-    DropMeta: {Height: 50, Width: 50},
-    IceCollinsMeta: {Height: 9999, Width: 9999},
-    IceRegularMeta: {Height: 25, Width: 25},
-    IceLargeMeta: {Height: 34, Width: 34},
-    SugarCubeMeta: {Height: 20, Width: 20},
+    DropletMeta: { Height: 25, Width: 25 },
+    LiquidMeta: { Height: 10, Width: 10 },
+    TwistMeta: { Height: 50, Width: 100 },
+    DropMeta: { Height: 50, Width: 50 },
+    IceCollinsMeta: { Height: 9999, Width: 9999 },
+    IceRegularMeta: { Height: 25, Width: 25 },
+    IceLargeMeta: { Height: 34, Width: 34 },
+    SugarCubeMeta: { Height: 20, Width: 20 },
 };
 
 
@@ -94,7 +94,7 @@ function ResetSVGSpace(glass?: IGlass): void {
 
     temp = SVG('svgtmp').attr('id', 'svgtmp');
     canv = SVG('svg').attr('height', null).attr('width', null).viewbox(0, 0, SVGOptions.WidthCanvas, SVGOptions.HeightCanvas).attr('id', 'canv_vb');
-    mainG = canv.nested().attr({id: 'mg'});
+    mainG = canv.nested().attr({ id: 'mg' });
     iceG = canv.nested().attr('id', 'iceg');
     glassG = canv.nested().attr('id', 'glassg');
     topG = canv.nested().attr('id', 'topg');
@@ -111,7 +111,7 @@ function ResetSVGSpace(glass?: IGlass): void {
  * @param ingredient Ingredient to assign to the highlighter
  */
 function highlightGroupGenerator(ingredient: IIngredient) {
-    const f = function() {
+    const f = function () {
         GroupRegister.forEach(x => x.attr('opacity', 0.3));
         GroupRegister.filter(x => x.id() === makeIngredientGroupId(ingredient))[0].attr('opacity', 1);
         const idLinkToFind = makeIngredientIdForHTML(ingredient);
@@ -181,7 +181,7 @@ function getIngredientNodeSVGStyle(ing: IIngredientNode, available: Array<IIngre
     return highestImageUrl;
 }
 
-const smap: {[key: string]: string} = {
+const smap: { [key: string]: string } = {
 
 };
 
@@ -207,7 +207,7 @@ function calculateLiquidRatios(drink: IDrink): Array<IIngredientRatio> {
     const numOtherRows = drink.Ingredients.filter(x => x.Unit === 'splash' || x.Unit === 'float' || x.Unit === 'top').length * FloatRowCoat; // We dedicate a single row to each of these types.
     const numBarSpoons = drink.Ingredients.filter(x => x.Unit === 'bs' || x.Unit === 'ts').length * BSRowCount; // we dedicate 2 rows to each bs ingreditent.
 
-    const glass: IGlass =  GlassString2Glass(drink.Glass);
+    const glass: IGlass = GlassString2Glass(drink.Glass);
     const ratios: Array<IIngredientRatio> = ounces.map(x => {
         const q: number = useThisNumber(x.Quantity);
         const ratf: number = (q / total);
@@ -248,8 +248,13 @@ function getTwistsAndDrops(drink: IDrink): Array<IIngredient> {
 }
 
 function getPinchesAndDashes(drink: IDrink): Array<IIngredient> {
-   const ret = drink.Ingredients.filter(x => (x.Unit === 'dash' || x.Unit === 'pinch') && x.DisplayOrder > -1);
-   return ret;
+    const ret = drink.Ingredients.filter(x => (x.Unit === 'dash' || x.Unit === 'pinch') && x.DisplayOrder > -1);
+    return ret;
+}
+
+function getLeavesOrSprigs(drink: IDrink): Array<IIngredient> {
+    const ret = drink.Ingredients.filter(x => (x.Unit == 'leaf' || x.Unit == 'sprig') && x.DisplayOrder > -1);
+    return ret;
 }
 
 async function GetSVG(url: string): Promise<string> {
@@ -296,7 +301,7 @@ function icdraw(cube: IIngredient, cubeS: string, count: number, g: SVG.G, glass
     const ice: SVG.Element = temp.clone().svg(cubeS);
     ice.remove().attr('id', 'ice_cube');
     ice.x(glass.Width / 4); // width begins counting from farthest left. We go 25% in to center againt the backing element (the GlassG)
-    ice.y(glass.Height - ((iceheight * (count + 1 )) * magicMult)); // +1 to account for zero being off screen *4 because??
+    ice.y(glass.Height - ((iceheight * (count + 1)) * magicMult)); // +1 to account for zero being off screen *4 because??
     g.add(ice);
 }
 
@@ -435,10 +440,14 @@ async function DrawDrinkSVG(drink: IDrink, universe: Array<IIngredientNode>) {
     const additionalSidePush: Array<number> = [0];
 
     const garnishes: Array<IIngredient> = getOtherGanirshes(drink);
-    additionalSidePush.push(Math.min(1, garnishes.length) * 90 / 2); // todo height of garnish. We only take one, we do not stack garnishes
-    additionalHeights.push(Math.min(1, garnishes.length) * 90 / 2); // we split the dimensions of a garnish across the x and y vectors
+    const garnishHeight = 90;
+    additionalSidePush.push(Math.min(1, garnishes.length) * garnishHeight / 2); // todo height of garnish. We only take one, we do not stack garnishes
+    additionalHeights.push(Math.min(1, garnishes.length) * garnishHeight / 2); // we split the dimensions of a garnish across the x and y vectors
 
-     /* here we calculate the additional height we need to add to our drawing to account for top-items like drops and pinches and bitters */
+    const leaves: Array<IIngredient> = getLeavesOrSprigs(drink);
+    additionalHeights.push((leaves.length * garnishHeight))
+
+    /* here we calculate the additional height we need to add to our drawing to account for top-items like drops and pinches and bitters */
 
     const twists: Array<IIngredient> = getTwistsAndDrops(drink);
     additionalHeights.push(twists.length * SVGOptions.TwistMeta.Height);
@@ -451,7 +460,7 @@ async function DrawDrinkSVG(drink: IDrink, universe: Array<IIngredientNode>) {
             return p;
         }
     }, 0) * SVGOptions.DropletMeta.Height);
-    const additionalHeightNeeded: number =  Math.max(...additionalHeights);
+    const additionalHeightNeeded: number = Math.max(...additionalHeights);
 
     const additionalSidePushNeeded: number = Math.max(...additionalSidePush);
 
@@ -473,14 +482,14 @@ async function DrawDrinkSVG(drink: IDrink, universe: Array<IIngredientNode>) {
         const elem_height: number = SVGOptions.DropletMeta.Height;
         const start_x: number = glass.Width; /* Draws from left-to-right */
         const off_x: number = (elem_height * (i + 1)); /* will move some amount to the side for each different-type ingredient */
-        const off_y: number  = elem_height; /* will move down by some amount for each same-ingredient */
+        const off_y: number = elem_height; /* will move down by some amount for each same-ingredient */
         const start_y: number = additionalHeightNeeded; /* starts drawing bottom up */
         const svgg: SVG.G = await drawTop(dash, start_x, off_x, start_y, off_y, elem_height, universe);
         topG.add(svgg);
     }
 
     /* Draw Cracked or Crushed Ice if any */
-    const crackedIce: IIngredient =  drink.Ingredients.filter(x => x.Unit === 'cracked' || x.Unit === 'crushed').find(x => true);
+    const crackedIce: IIngredient = drink.Ingredients.filter(x => x.Unit === 'cracked' || x.Unit === 'crushed').find(x => true);
     if (crackedIce) {
 
         const heightIce = 25;
@@ -512,7 +521,7 @@ async function DrawDrinkSVG(drink: IDrink, universe: Array<IIngredientNode>) {
         const svgu: string = getIngredientSVGStyle(crackedIce, universe);
         const svgs: string = `/img/ingredients/${svgu}.svg`;
         const svgg = makeIngredientGroup(crackedIce).remove();
-        const count = (crackedIce.Quantity === 'half' ?  glass.Height / 2 : glass.Height) / heightIce;
+        const count = (crackedIce.Quantity === 'half' ? glass.Height / 2 : glass.Height) / heightIce;
         for (let i = 0; i < count; i++) {
             await crackedDraw(svgs, svgg);
         }
@@ -533,7 +542,7 @@ async function DrawDrinkSVG(drink: IDrink, universe: Array<IIngredientNode>) {
             const first = rowGroup.nested().svg(t).attr('id', `stamp_collins`);
             const row = rowGroup.remove();
             const widthIce = 90;
-            first.x( (glass.Width / 2) - (widthIce / 2) );
+            first.x((glass.Width / 2) - (widthIce / 2));
             first.dy(glass.Height / 10);
             g.add(row);
         }
@@ -557,8 +566,9 @@ async function DrawDrinkSVG(drink: IDrink, universe: Array<IIngredientNode>) {
                 Quantity: '1'
             };
             const isMint = (garnish.Unit === 'leaf' || garnish.Unit === 'sprig');
-            const elem_height: number = isMint ? 90 : (90 / 2); // todo height of garnish element divided by 2
-            const start_x: number =  isMint ? 0 : -(elem_height); /* Draws from right-to-left */
+            const mintHeight = 90;
+            const elem_height: number = isMint ? mintHeight : (mintHeight / 2); // todo height of garnish element divided by 2
+            const start_x: number = isMint ? 0 : -(elem_height); /* Draws from right-to-left */
             const off_x: number = 0; /* Does not move x's */
             const off_y: number = ((i + 1) * elem_height); /* will move down by some amount for each ingredient */
             const start_y: number = additionalHeightNeeded; /* Starts drawing bottom up */
@@ -593,7 +603,7 @@ async function DrawIngredientSVG(ingredient: IIngredientNode, universe: Array<II
     }
     const svgs: string = await GetSVG(`/img/ingredients/${svgu}.svg`);
     const scale = 1;
-    const canvas = SVG('svgholder').attr('width', `${SVGOptions.HeightElement * scale}px`).attr('height',  `${SVGOptions.HeightElement * scale}px`);
+    const canvas = SVG('svgholder').attr('width', `${SVGOptions.HeightElement * scale}px`).attr('height', `${SVGOptions.HeightElement * scale}px`);
     canvas.svg(svgs).scale(scale);
 
     return;
