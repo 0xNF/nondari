@@ -18,6 +18,7 @@ import { StorageGetPantryItems } from './services/StorageService';
 import { setCategoryType, setDrinkName, setGlassType, BuilderDraw, addIngredient, CreateDrink, DecodeDrink, setInstructions, setPrelude, InitBuilder, CancelIngredientAdd, RevealIngredientAdd } from './services/BuilderService';
 import { IData } from './models/Data';
 import { constructRecipes } from './services/RecipeService';
+import { Search } from './services/SearchService';
 
 // -- Global Variables --\\
 const NavObj: INavObject = {
@@ -169,4 +170,5 @@ export {
     CreateDrink,
     CancelIngredientAdd,
     RevealIngredientAdd,
+    Search,
 };

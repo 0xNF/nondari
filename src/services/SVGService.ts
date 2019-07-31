@@ -253,7 +253,7 @@ function getPinchesAndDashes(drink: IDrink): Array<IIngredient> {
 }
 
 function getLeavesOrSprigs(drink: IDrink): Array<IIngredient> {
-    const ret = drink.Ingredients.filter(x => (x.Unit == 'leaf' || x.Unit == 'sprig') && x.DisplayOrder > -1);
+    const ret = drink.Ingredients.filter(x => (x.Unit === 'leaf' || x.Unit === 'sprig') && x.DisplayOrder > -1);
     return ret;
 }
 
@@ -445,7 +445,7 @@ async function DrawDrinkSVG(drink: IDrink, universe: Array<IIngredientNode>) {
     additionalHeights.push(Math.min(1, garnishes.length) * garnishHeight / 2); // we split the dimensions of a garnish across the x and y vectors
 
     const leaves: Array<IIngredient> = getLeavesOrSprigs(drink);
-    additionalHeights.push((leaves.length * garnishHeight))
+    additionalHeights.push((leaves.length * garnishHeight));
 
     /* here we calculate the additional height we need to add to our drawing to account for top-items like drops and pinches and bitters */
 

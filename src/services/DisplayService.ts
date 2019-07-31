@@ -109,7 +109,7 @@ function displayRecipe(recipe?: IRecipe) {
             const sp: JQuery<HTMLElement> = $('<span>');
             const li: JQuery<HTMLElement> = $('<li>').addClass('text');
             const ul: JQuery<HTMLElement> = li.append(sp);
-            const t: JQuery<HTMLElement> = ingredientText(x, ""); // TODO typescript being a bitch
+            const t: JQuery<HTMLElement> = ingredientText(x, ''); // TODO typescript being a bitch
             sp.html(t as any);
             $('#drinkIngredients').append(ul);
         });
