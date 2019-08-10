@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Search - Nondari</title>
+    <meta charset="utf-8">
+    <link href="/img/favicon.png" rel="shortcut icon" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/site.css">
+    <link rel="preload" href="/img/favicon.svg">
+    <link rel="preload" href="/img/glasses/collins2.svg">
+    <link rel="preload" href="/img/glasses/collins2_mask.svg">
+    <link rel="preload" href="/img/glasses/collins3.svg">
+    <link rel="preload" href="/img/glasses/collins3_mask.svg">
+    <link rel="preload" href="/img/glasses/coupe2.svg">
+    <link rel="preload" href="/img/glasses/coupe2_mask.svg">
+    <link rel="preload" href="/img/glasses/flute.svg">
+    <link rel="preload" href="/img/glasses/flute_mask.svg">
+    <link rel="preload" href="/img/glasses/highball.svg">
+    <link rel="preload" href="/img/glasses/highball2.svg">
+    <link rel="preload" href="/img/glasses/highball2_mask.svg">
+    <link rel="preload" href="/img/glasses/highball_mask.svg">
+    <link rel="preload" href="/img/glasses/imperial_pint.svg">
+    <link rel="preload" href="/img/glasses/imperial_pint_mask.svg">
+    <link rel="preload" href="/img/glasses/irish_mug.svg">
+    <link rel="preload" href="/img/glasses/irish_mug_mask.svg">
+    <link rel="preload" href="/img/glasses/martini.svg">
+    <link rel="preload" href="/img/glasses/martini_mask.svg">
+    <link rel="preload" href="/img/glasses/oldfashionedwineglass.svg">
+    <link rel="preload" href="/img/glasses/oldfashionedwineglass_mask.svg">
+    <link rel="preload" href="/img/glasses/redwineglass.svg">
+    <link rel="preload" href="/img/glasses/redwineglass_mask.svg">
+    <link rel="preload" href="/img/glasses/rocks2.svg">
+    <link rel="preload" href="/img/glasses/rocks2_mask.svg">
+    <link rel="preload" href="/img/glasses/sour.svg">
+    <link rel="preload" href="/img/glasses/sour_mask.svg">
+    <link rel="preload" href="/img/glasses/stout.svg">
+    <link rel="preload" href="/img/glasses/stout_mask.svg">
+    <link rel="preload" href="/img/glasses/whiskey.svg">
+    <link rel="preload" href="/img/glasses/whiskey_mask.svg">
+    <link rel="preload" href="/img/ingredients/ALL.svg">
+    <link rel="preload" href="/img/ingredients/base.svg">
+    <link rel="preload" href="/img/ingredients/base_droplet.svg">
+    <link rel="preload" href="/img/ingredients/brownsugarcube.svg">
+    <link rel="preload" href="/img/ingredients/celery.svg">
+    <link rel="preload" href="/img/ingredients/cherry.svg">
+    <link rel="preload" href="/img/ingredients/collinsicecube.svg">
+    <link rel="preload" href="/img/ingredients/cracked.svg">
+    <link rel="preload" href="/img/ingredients/droplet_angostura.svg">
+    <link rel="preload" href="/img/ingredients/droplet_app.svg">
+    <link rel="preload" href="/img/ingredients/droplet_chocolate.svg">
+    <link rel="preload" href="/img/ingredients/droplet_hotsauce.svg">
+    <link rel="preload" href="/img/ingredients/droplet_misc.svg">
+    <link rel="preload" href="/img/ingredients/droplet_orange.svg">
+    <link rel="preload" href="/img/ingredients/droplet_peychaud.svg">
+    <link rel="preload" href="/img/ingredients/grapefruittwist.svg">
+    <link rel="preload" href="/img/ingredients/largeicecube.svg">
+    <link rel="preload" href="/img/ingredients/lemontwist.svg">
+    <link rel="preload" href="/img/ingredients/limetwist.svg">
+    <link rel="preload" href="/img/ingredients/mint.svg">
+    <link rel="preload" href="/img/ingredients/mint_leaves.svg">
+    <link rel="preload" href="/img/ingredients/olive.svg">
+    <link rel="preload" href="/img/ingredients/onions.svg">
+    <link rel="preload" href="/img/ingredients/orangetwist.svg">
+    <link rel="preload" href="/img/ingredients/pick.svg">
+    <link rel="preload" href="/img/ingredients/regularicecube.svg">
+    <link rel="preload" href="/img/ingredients/slice_cucumber.svg">
+    <link rel="preload" href="/img/ingredients/slice_grapefruit.svg">
+    <link rel="preload" href="/img/ingredients/slice_jalapeno.svg">
+    <link rel="preload" href="/img/ingredients/slice_lemon.svg">
+    <link rel="preload" href="/img/ingredients/slice_lime.svg">
+    <link rel="preload" href="/img/ingredients/slice_orange.svg">
+    <link rel="preload" href="/img/ingredients/slice_strawberry.svg">
+    <link rel="preload" href="/img/ingredients/style10_applecordial.svg">
+    <link rel="preload" href="/img/ingredients/style10_bluecuracao.svg">
+    <link rel="preload" href="/img/ingredients/style10_cherrycordial.svg">
+    <link rel="preload" href="/img/ingredients/style10_chocolatecordial.svg">
+    <link rel="preload" href="/img/ingredients/style10_coffeecordial.svg">
+    <link rel="preload" href="/img/ingredients/style10_dram.svg">
+    <link rel="preload" href="/img/ingredients/style10_greenchartreuse.svg">
+    <link rel="preload" href="/img/ingredients/style10_maplesyrup.svg">
+    <link rel="preload" href="/img/ingredients/style10_mintcordial.svg">
+    <link rel="preload" href="/img/ingredients/style10_orangecordial.svg">
+    <link rel="preload" href="/img/ingredients/style10_simplesyrup.svg">
+    <link rel="preload" href="/img/ingredients/style10_yellowchartreuse.svg">
+    <link rel="preload" href="/img/ingredients/style11_cream.svg">
+    <link rel="preload" href="/img/ingredients/style12_grapefruitjuice.svg">
+    <link rel="preload" href="/img/ingredients/style12_lemonjuice.svg">
+    <link rel="preload" href="/img/ingredients/style12_limejuice.svg">
+    <link rel="preload" href="/img/ingredients/style12_orangejuice.svg">
+    <link rel="preload" href="/img/ingredients/style12_pineapplejuice.svg">
+    <link rel="preload" href="/img/ingredients/style13_applecider.svg">
+    <link rel="preload" href="/img/ingredients/style13_espresso.svg">
+    <link rel="preload" href="/img/ingredients/style13_gingerbeer.svg">
+    <link rel="preload" href="/img/ingredients/style13_honey.svg">
+    <link rel="preload" href="/img/ingredients/style13_mineralsaline.svg">
+    <link rel="preload" href="/img/ingredients/style13_orangeblossomwater.svg">
+    <link rel="preload" href="/img/ingredients/style13_rosewater.svg">
+    <link rel="preload" href="/img/ingredients/style13_soda.svg">
+    <link rel="preload" href="/img/ingredients/style14_demerarasimplesyrup.svg">
+    <link rel="preload" href="/img/ingredients/style14_gingersyrup.svg">
+    <link rel="preload" href="/img/ingredients/style14_grenadinesyrup.svg">
+    <link rel="preload" href="/img/ingredients/style14_honeysyrup.svg">
+    <link rel="preload" href="/img/ingredients/style14_maplesyrup.svg">
+    <link rel="preload" href="/img/ingredients/style14_orgeatsyrup.svg">
+    <link rel="preload" href="/img/ingredients/style14_simplesyrup.svg">
+    <link rel="preload" href="/img/ingredients/style14_syrup.svg">
+    <link rel="preload" href="/img/ingredients/style14_violettesyrup.svg">
+    <link rel="preload" href="/img/ingredients/style15_jam.svg">
+    <link rel="preload" href="/img/ingredients/style15_peachpuree.svg">
+    <link rel="preload" href="/img/ingredients/style15_raspberryjam.svg">
+    <link rel="preload" href="/img/ingredients/style16_vodka.svg">
+    <link rel="preload" href="/img/ingredients/style1_rum.svg">
+    <link rel="preload" href="/img/ingredients/style1_rumdark.svg">
+    <link rel="preload" href="/img/ingredients/style2_gin.svg">
+    <link rel="preload" href="/img/ingredients/style2_jenever.svg">
+    <link rel="preload" href="/img/ingredients/style3_bourbon.svg">
+    <link rel="preload" href="/img/ingredients/style3_whiskey.svg">
+    <link rel="preload" href="/img/ingredients/style4_mezcal.svg">
+    <link rel="preload" href="/img/ingredients/style4_tequila.svg">
+    <link rel="preload" href="/img/ingredients/style5_brandyapple.svg">
+    <link rel="preload" href="/img/ingredients/style5_brandywine.svg">
+    <link rel="preload" href="/img/ingredients/style6_amaro.svg">
+    <link rel="preload" href="/img/ingredients/style7_misc.svg">
+    <link rel="preload" href="/img/ingredients/style8_dryvermouth.svg">
+    <link rel="preload" href="/img/ingredients/style8_sweetvermouth.svg">
+    <link rel="preload" href="/img/ingredients/style8_vermouth.svg">
+    <link rel="preload" href="/img/ingredients/style9_redwine.svg">
+    <link rel="preload" href="/img/ingredients/style9_sparklingwine.svg">
+    <link rel="preload" href="/img/ingredients/style9_whitewine.svg">
+    <link rel="preload" href="/img/ingredients/twist_base.svg">
+    <link rel="preload" href="/img/ingredients/wedge_grapefruit.svg">
+    <link rel="preload" href="/img/ingredients/wedge_lemon.svg">
+    <link rel="preload" href="/img/ingredients/wedge_lime.svg">
+    <link rel="preload" href="/img/ingredients/wedge_orange.svg">
+    <link rel="preload" href="/img/ingredients/whitesugarcube.svg">
+</head>
+
+<body>
+    <nav class="navpush navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/index.html">
+            <img src="/img/favicon2.png" height="25" width="25" style="margin-right: 5px"></img>
+            Nondari
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/index.html">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/builder.html">Builder</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Drinks
+                    </a>
+                    <div id="navdrinklist" class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        More
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="/drinks.html">Drink List</a>
+                        <a class="dropdown-item" href="/pantry.html">Pantry</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/about.html">About</a>
+                    </div>
+                </li>
+            </ul>
+            <div class="form-inline my-2 my-lg-0">
+                <input id="searchBox" class="form-control mr-sm-2" type="search" placeholder="Search"
+                    aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0"
+                    onclick="nondari.Search($('#searchBox')[0].value)">Search</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="sidenav sidenavpush">
+        <button onclick="nondari.toggleDrinkList()">
+            <span id="drinklistarrow"></span>Drink List
+        </button>
+        <div id="drinkslistcontainer" class="drinkListContainer">
+        </div>
+        <a href="#services">Search</a>
+        <a href="/pantry.html">Pantry</a>
+        <a href="#" class="liSelected">Drink Builder</a>
+    </div>
+
+    <div class="main mainpush">
+        <div class="main_builder">
+            <h3>
+                <span>
+                    Search Results
+                </span>
+                <span id="result_count">
+                    (0)
+                </span>
+            </h3>
+
+            <div class="entry_grid text" style="max-width: none;">
+                <span id='errorContainer' class='ErrorText hidden'>
+                    <ul id="errorList">
+                    </ul>
+                </span>
+
+                <span id="no_results" class="">No results</span>
+
+                <ul id="search_results" style="list-style: none;">
+
+                </ul>
+            </div>
+
+
+        </div>
+    </div>
+
+    <footer class="footer">
+        &copy;2019 Nondari
+        <span style='float: right'>
+            <a href='/about.html'>About</a>
+            <a href="https://www.github.com/0xnf/nondari">GitHub</a>
+        </span>
+    </footer>
+
+
+</body>
+
+</html>

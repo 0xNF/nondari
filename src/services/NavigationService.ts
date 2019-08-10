@@ -12,6 +12,9 @@ const PageTypes = {
     Drink: 'drink',
     Pantry: 'pantry',
     Ingredient: 'ingredient',
+    Search: 'search',
+    Builder: 'builder',
+    Custom: 'custom',
 };
 
 function findPage(): string {
@@ -33,9 +36,11 @@ function makeNavForDrink(foundDrink: IDrinkEvaluation) {
     /* Storing substitutes for a given drink */
 
     function encodeSubstitutions(subs: KVP<Array<Array<string>>>): string {
-        // sub is {key: {0: [items], ..., n: [items]}}
-        // i24 d3 s18,24,67
-        // i6 d2 s9 d3 10
+        /*
+        * sub is {key: {0: [items], ..., n: [items]}}
+        * i24 d3 s18,24,67
+        * i6 d2 s9 d3 10
+        */
         let s: string = '';
         for (const ingidA in subs) {
             let si: string = `i${ingidA}`;
@@ -47,7 +52,7 @@ function makeNavForDrink(foundDrink: IDrinkEvaluation) {
         }
         return s;
     }
-    // need to encode(id of thing to replace, id of thing to replace with, distance of replacement);
+    /* need to encode(id of thing to replace, id of thing to replace with, distance of replacement); */
     const q2: URLSearchParams = new URLSearchParams('?');
 
     q2.set('page', 'drink');
@@ -155,7 +160,7 @@ function decodeDrinkNav(qstring: string, drinkUniverse: Array<IDrink>, ingredien
                     until = dindex[i + 1];
                 }
                 const dsub: string = s.substr(dindex + 1, until);
-                const d: KVP<Array<number>> =  handle_d(dsub); // an object of {[distance]: [itemids]}
+                const d: KVP<Array<number>> = handle_d(dsub); // an object of {[distance]: [itemids]}
                 if (!d) {
                     continue; // error from below
                 }

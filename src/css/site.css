@@ -261,6 +261,24 @@ body {
         
     }
 
+
+.searchresult {
+    /* background-color: lightblue; */
+    border: 2px;
+    border-color: gray;
+    border-style: solid;
+    padding: 4px;
+    margin-bottom: 5px;
+}
+
+.search_text {
+
+}
+
+.search_highlight {
+    background-color: orange;
+}
+
 @media only screen and (min-width: 768px) {
 
 

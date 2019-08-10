@@ -18,7 +18,7 @@ import { StorageGetPantryItems } from './services/StorageService';
 import { setCategoryType, setDrinkName, setGlassType, BuilderDraw, addIngredient, CreateDrink, DecodeDrink, setInstructions, setPrelude, InitBuilder, CancelIngredientAdd, RevealIngredientAdd } from './services/BuilderService';
 import { IData } from './models/Data';
 import { constructRecipes } from './services/RecipeService';
-import { Search } from './services/SearchService';
+import { Search, SearchDraw } from './services/SearchService';
 
 // -- Global Variables --\\
 const NavObj: INavObject = {
@@ -135,6 +135,8 @@ async function main(json: IData) {
         await BuilderDraw();
     } else if (thispage === 'custom') {
         await DrawCustom();
+    } else if (thispage === 'search') {
+        await SearchDraw(window.location.search);
     }
     window.onhashchange = locationHashChanged;
     locationHashChanged();
